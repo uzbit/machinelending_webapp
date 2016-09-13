@@ -8,5 +8,4 @@ from lcApi import app
 
 @app.route('/lcApi')
 def index():
-    return jsonify({})
-
+    return jsonify({"hello": "world"})
