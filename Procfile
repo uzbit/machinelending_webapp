@@ -1,2 +1,2 @@
-web: gunicorn webapp:app --log-file=-
-lcApi: gunicorn lcApi:app --log-file=-
+#machinelending: gunicorn runserver --log-file=-
+machinelending: python runserver.py

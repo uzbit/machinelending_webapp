@@ -33,8 +33,8 @@ def not_found_error(error):
 from lcApi import views
 
 # Default port:
-if __name__ == '__main__':
-    app.run()
+#if __name__ == '__main__':
+#    app.run()
 
 # Or specify port manually:
 '''
