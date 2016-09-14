@@ -62,15 +62,15 @@ if not app.debug:
 # Launch.
 #----------------------------------------------------------------------------#
 
-from webapp import views
-
-# Default port:
-#if __name__ == '__main__':
-#    app.run()
-
-# Or specify port manually:
-'''
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-'''
+from .views.index import index_blueprint
+from .views.lc import lc_blueprint
+from .views.about import about_blueprint
+from .views.contact import contact_blueprint
+from .views.register import register_blueprint
+from .views.login import login_blueprint
+app.register_blueprint(index_blueprint)
+app.register_blueprint(lc_blueprint)
+app.register_blueprint(about_blueprint)
+app.register_blueprint(contact_blueprint)
+app.register_blueprint(register_blueprint)
+app.register_blueprint(login_blueprint)
