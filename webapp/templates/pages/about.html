@@ -3,12 +3,40 @@
 {% block content %}
 
 <div class="page-header">
-  <h1>About Page</h1>
+  <h1>About Machine Lending</h1>
 </div>
-<p class="lead">This is just a placeholder page which should be replaced with real content.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut tellus ligula, imperdiet id lobortis sit amet, scelerisque non sapien. Duis quis dui quis mauris dapibus fringilla. Pellentesque nec tellus ac diam volutpat malesuada.</p>
-<p>In quam arcu, interdum vel arcu viverra, vulputate convallis massa. Sed hendrerit velit a arcu euismod, sit amet consequat lacus imperdiet. Nullam quis dui sapien. Vestibulum placerat, justo non fringilla laoreet, dui ipsum posuere nisi, nec vestibulum eros leo ut sapien.</p>
-<p>Vivamus eu felis sed magna scelerisque semper in et libero. Curabitur sed convallis odio, quis venenatis sapien. In convallis a velit ac commodo. Donec sapien ligula, vestibulum ut nisi accumsan, facilisis pretium est. Fusce varius semper orci, et egestas nulla cursus a. Phasellus aliquam, mi ac adipiscing lobortis, ipsum augue aliquam ligula, quis fermentum mi augue vel ligula.</p>
-<p>Integer elementum malesuada dolor in aliquet.</p>
+<p class="lead">Introduction</p>
+<a href="https://en.wikipedia.org/wiki/Peer-to-peer_lending">Peer-to-peer lending</a>
+is a relatively new form of financing, from the people to the people. One of the first, and currently largest,
+such lending platforms is <a href="https://www.lendingclub.com/">Lending Club</a>.
+Click <a href="https://www.lendingclub.com/public/how-peer-lending-works.action">here</a>
+for more information about Lending Club and how democratized lending works.
+<p></p>
+Lending Club and other platforms generally have an "Auto-Invest" option to allow
+investors to minimally manage their investment. Lending Club, for instance, allows one
+to choose a distribution of loan grades to invest in. However, choosing a distribution
+to optimize returns is not exactly obvious. This is the reason Machine Lending was developed.
+<p></p>
+The term <i>Machine Lending</i> is ment to describe the fact that the
+loan default predictions on this site are calculated using
+state-of-the-art machine learning algorithms. The model used to make the predictions
+is constantly evolving and improving. See the <a href="#methods">Methods</a> for more details.
+<p></p>
+<p class="lead">Data</p>
+<a name="data"></a>
+As any good and transparent orginization would do, Lending Club has made a large amount of historical
+data <a href="https://www.lendingclub.com/info/download-data.action">available</a>.
+This data ranges from interest rate and FICO score to the number of months since the borrower was
+delinquent and their <a href="http://www.creditcards.com/glossary/term-revolving-balance.php">revolving balance</a>.
+Crucially, it also includes the current state of the loan. This means one can see if a loan
+was paid in full, charged off, or current. That information is used as the dependent variable
+when creating the Lending Club model. Everything else is used to train the models to predict loan default rate.
+<p></p>
+<p class="lead">Methods</p>
+<a name="methods"></a>
+
+<p></p>
+<p class="lead">Results</p>
+<a name="results"></a>
 
 {% endblock %}
