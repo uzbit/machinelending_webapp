@@ -24,7 +24,7 @@ is constantly evolving and improving. See the <a href="#methods">Methods</a> for
 <p></p>
 <p class="lead">Data</p>
 <a name="data"></a>
-As any good and transparent orginization would do, Lending Club has made a large amount of historical
+As any good and transparent corporation would do, Lending Club has made a large amount of historical
 data <a href="https://www.lendingclub.com/info/download-data.action">available</a>.
 This data ranges from interest rate and FICO score to the number of months since the borrower was
 delinquent and their <a href="http://www.creditcards.com/glossary/term-revolving-balance.php">revolving balance</a>.
@@ -32,9 +32,19 @@ Crucially, it also includes the current state of the loan. This means one can se
 was paid in full, charged off, or current. That information is used as the dependent variable
 when creating the Lending Club model. Everything else is used to train the models to predict loan default rate.
 <p></p>
+In addition to historical data, Lending Club also provides information about the current loans that
+require funding via their <a href="https://www.lendingclub.com/developers/lc-api.action">API</a>. This enables
+algorithmic prediction and purchase of the cream of the crop loans.
+<p></p>
 <p class="lead">Methods</p>
 <a name="methods"></a>
-
+To make loan default predictions, Machine Lending uses what is called
+<a href="https://en.wikipedia.org/wiki/Ensemble_learning">ensemble learning</a>.
+In short, take a set of the appropriate machine learning algorithms and optimize
+their coordination to fit the historical data as best possible.
+Another way to think of it is meta-classification. The source code for the
+in-house meta classifier is available on
+<a href="https://github.com/uzbit/mlutils">github</a>
 <p></p>
 <p class="lead">Results</p>
 <a name="results"></a>
