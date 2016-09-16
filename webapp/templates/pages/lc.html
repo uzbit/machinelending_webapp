@@ -2,8 +2,13 @@
 {% block title %}Lending Club{% endblock %}
 {% block content %}
 
+<script type="text/javascript" src="/static/js/lc.js" defer></script>
+
 <div class="page-header">
   <h1>Lending Club Loans</h1>
 </div>
+
+<table id="lcTable" class="display" width="100%"></table>
+<div id="lcAsOfDate">No Data</div>
 
 {% endblock %}
