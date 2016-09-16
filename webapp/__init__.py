@@ -43,7 +43,6 @@ def internal_error(error):
     #db_session.rollback()
     return render_template('errors/500.html'), 500
 
-
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 404
@@ -68,9 +67,11 @@ from .views.about import about_blueprint
 from .views.contact import contact_blueprint
 from .views.register import register_blueprint
 from .views.login import login_blueprint
+from .views.forgot import forgot_blueprint
 app.register_blueprint(index_blueprint)
 app.register_blueprint(lc_blueprint)
 app.register_blueprint(about_blueprint)
 app.register_blueprint(contact_blueprint)
 app.register_blueprint(register_blueprint)
 app.register_blueprint(login_blueprint)
+app.register_blueprint(forgot_blueprint)

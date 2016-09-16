@@ -21,11 +21,9 @@ class RegisterForm(Form):
         EqualTo('password', message='Passwords must match')]
     )
 
-
 class LoginForm(Form):
     name = TextField('Username', [DataRequired()])
     password = PasswordField('Password', [DataRequired()])
-
 
 class ForgotForm(Form):
     email = TextField(

@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template
-
+from flask import Blueprint, render_template, request
+from webapp.forms import RegisterForm
 register_blueprint = Blueprint('register', __name__)
 
 @register_blueprint.route('/register')
 def index():
-    return render_template('pages/register.html')
+	form = RegisterForm(request.form)
+	return render_template('forms/register.html', form=form)
