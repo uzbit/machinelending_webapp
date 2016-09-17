@@ -7,11 +7,9 @@ LendingClubJS.prototype.constructor = LendingClubJS;
 
 LendingClubJS.prototype.getCurrentLoans = function(){
 	var this_ = this;
-	console.log("HERE");
 			
 	$.getJSON('lcApi/', {},
 		function(json){
-			console.log("HERE2");
 			this_.makeTable(json);
 		}
 	).fail(function(jqxhr, textStatus, error ) {
