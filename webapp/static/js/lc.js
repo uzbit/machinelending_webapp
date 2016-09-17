@@ -7,18 +7,24 @@ LendingClubJS.prototype.constructor = LendingClubJS;
 
 LendingClubJS.prototype.getCurrentLoans = function(){
 	var this_ = this;
+	console.log("HERE");
+			
 	$.getJSON('lcApi/', {},
 		function(json){
+			console.log("HERE2");
 			this_.makeTable(json);
 		}
-	);
-}
+	).fail(function(jqxhr, textStatus, error ) {
+		var err = textStatus + ", " + error;
+	    console.log( "Request Failed: " + err );
+	});
+};
 
 LendingClubJS.prototype.makeTable = function(json){
 	let loans = json['loans'];
 	let asOfDate = json['asOfDate'];
 	let data = [];
-	let columns = ['id', 'loanAmount', 'purpose']
+	let columns = ['id', 'loanAmount', 'intRate', 'subGrade', 'purpose', 'defaultProb'];
 	for (let i = 0; i < loans.length; i++) {
 		let row = [];
 		for (let j = 0; j < columns.length; j++){
@@ -37,10 +43,13 @@ LendingClubJS.prototype.makeTable = function(json){
 		 "columns": [
 				 { title: "Loan Id" },
 				 { title: "Loan Amount" },
+				 { title: "Interest Rate" },
+				 { title: "Grade" },
 				 { title: "Purpose" },
+				 { title: "Default Probability" },
 		 ]
  	});
-}
+};
 
 $(function() {
 	let lcJS = new LendingClubJS();
