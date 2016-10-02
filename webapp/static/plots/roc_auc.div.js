@@ -1,0 +1,1 @@
+document.write(' <div class="bk-root">     <div class="plotdiv" id="02359d68-6a41-464e-9f38-b0ee2886f6a0"></div> </div>');
