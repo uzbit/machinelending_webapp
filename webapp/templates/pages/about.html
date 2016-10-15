@@ -61,9 +61,15 @@ The source code for the in-house meta classifier is available on
 <p></p>
 <p class="lead">Results</p>
 <a name="results"></a>
+A commonly used metric to determine the performance of a binary classifier is the area under the
+<a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">Receiver Operating Characteristic</a> (ROC) curve.
+Generally, a classifier has an area under the curve (auc) somewhere between 0.5 and 1.0. Values closer to 1.0 indicate stronger
+predictive power. Below is a plot of the current ROC curve for the Machine Lending classifier, with auc = 0.9. Plotted is the mean (red)
+and ± 3*σ (blue) ROC curves for 50 fold training cross-validation sets.
 <script type="text/javascript" src="/static/plots/roc_auc_var.js"></script>
 <center>
 <script type="text/javascript" src="/static/plots/roc_auc_var.div.js"></script>
 </center>
+
 
 {% endblock %}
