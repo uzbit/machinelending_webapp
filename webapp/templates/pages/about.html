@@ -59,17 +59,37 @@ Several <a target="_blank" href="http://scikit-learn.org/stable/modules/generate
 The source code for the in-house meta classifier is available on
 <a target="_blank" href="https://github.com/uzbit/mlutils">github</a>.
 <p></p>
+The features used to make the data set include 44 of the columns from the historical data plus 29 engineered features.
+Some of the engineered features utilize zip_code to lookup information about the region from the 2014 Census as well as Zillow housing
+information. By removing the loan_status and using it as the dependent variable, as well as removing columns that do not
+populate more than one quartile, we end up with 58 feature columns in total. <b>Currently the model only uses data for
+36 month terms</b>. Extending this to other term lengths is future work.
+<p></p>
 <p class="lead">Results</p>
 <a name="results"></a>
 A commonly used metric to determine the performance of a binary classifier is the area under the
 <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">Receiver Operating Characteristic</a> (ROC) curve.
 Generally, a classifier has an area under the curve (auc) somewhere between 0.5 and 1.0. Values closer to 1.0 indicate stronger
 predictive power. Below is a plot of the current ROC curve for the Machine Lending classifier, with auc = 0.9. Plotted is the mean (red)
-and ± 3*σ (blue) ROC curves for 50 fold training cross-validation sets.
+and ± 3 standard deviations (blue) ROC curves for 50 fold training cross-validation sets.
 <script type="text/javascript" src="/static/plots/roc_auc_var.js"></script>
 <center>
 <script type="text/javascript" src="/static/plots/roc_auc_var.div.js"></script>
 </center>
+<p></p>
+To get an idea of how the features are used, on can pull the relative feature importances from the tree based models (xgboost, ExtraTreesClassifier, etc.)
+and plot their relative importance. Below is a plot of the feature importances for the xgboost classifier.
+<script type="text/javascript" src="/static/plots/feature_importance.js"></script>
+<center>
+<script type="text/javascript" src="/static/plots/feature_importance.div.js"></script>
+</center>
 
+<p class="lead">Disclaimer</p>
+The content included in this Website has been compiled from a variety of sources and is subject to change without notice as are any products, programs, offerings, or technical information described in this Website.
+Machine Lending makes no representation or warranty whatsoever regarding the completeness, quality, or adequacy of the Website or content, or the suitability, functionality, or operation of this web site or its content.
+By using this Website, you assume the risk that the content on this Website may be inaccurate, incomplete, or offensive or may not meet your needs and requirements.
+Machine Lending specifically disclaims all warranties, express or implied, including without limitation the warranties of merchantability, fitness for a particular purpose, and non-infringement with respect to this Website.
+In no event will the Machine Lending be liable for any special, indirect, incidental or consequential damages even if company has been advised of the possibility of such damages.
+<p></p>
 
 {% endblock %}

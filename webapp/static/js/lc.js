@@ -7,7 +7,7 @@ LendingClubJS.prototype.constructor = LendingClubJS;
 
 LendingClubJS.prototype.getCurrentLoans = function(){
 	var this_ = this;
-			
+
 	$.getJSON('lcApi/', {},
 		function(json){
 			this_.makeTable(json);
@@ -22,7 +22,7 @@ LendingClubJS.prototype.makeTable = function(json){
 	let loans = json['loans'];
 	let asOfDate = json['asOfDate'];
 	let data = [];
-	let columns = ['id', 'loanAmount', 'intRate', 'subGrade', 'purpose', 'defaultProb'];
+	let columns = ['id', 'loanAmount', 'intRate', 'subGrade', 'purpose', 'term', 'defaultProb'];
 	for (let i = 0; i < loans.length; i++) {
 		let row = [];
 		for (let j = 0; j < columns.length; j++){
@@ -44,6 +44,7 @@ LendingClubJS.prototype.makeTable = function(json){
 				 { title: "Interest Rate" },
 				 { title: "Grade" },
 				 { title: "Purpose" },
+				 { title: "Term" },
 				 { title: "Default Probability" },
 		 ]
  	});
