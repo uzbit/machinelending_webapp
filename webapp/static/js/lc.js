@@ -48,7 +48,7 @@ LendingClubJS.prototype.makeTable = function(json){
 				 { title: "Grade" },
 				 { title: "Purpose" },
 				 { title: "Term" },
-				 { title: "Default Probability" },
+				 { title: "Default Probability (%)" },
 		 ]
  	});
 };
