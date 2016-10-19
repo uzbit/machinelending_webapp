@@ -44,7 +44,7 @@ LendingClubJS.prototype.makeTable = function(json){
 		 "columns": [
 				 { title: "Loan Id" },
 				 { title: "Loan Amount" },
-				 { title: "Interest Rate" },
+				 { title: "Interest Rate (%)" },
 				 { title: "Grade" },
 				 { title: "Purpose" },
 				 { title: "Term" },
