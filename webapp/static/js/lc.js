@@ -31,6 +31,9 @@ LendingClubJS.prototype.makeTable = function(json){
 			if (col == 'id'){
 				val = "<a target='_blank' href='https://www.lendingclub.com/browse/loanDetail.action?loan_id="+val+"'>"+val+"</a>";
 			}
+			if (col == 'defaultProb'){
+				val = (100*val).toFixed(2)
+			}
 			row.push(val);
 		}
 		data.push(row);
