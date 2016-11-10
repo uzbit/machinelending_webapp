@@ -59,10 +59,10 @@ Several <a target="_blank" href="http://scikit-learn.org/stable/modules/generate
 The source code for the in-house meta classifier is available on
 <a target="_blank" href="https://github.com/uzbit/mlutils">github</a>.
 <p></p>
-The features used to make the data set include 44 of the columns from the historical data plus 29 engineered features.
+The features used to make the data set include 44 of the columns from the historical data plus engineered features.
 Some of the engineered features utilize zip_code to lookup information about the region from the 2014 Census as well as Zillow housing
 information. By removing the loan_status and using it as the dependent variable, as well as removing columns that do not
-populate more than one quartile, we end up with 58 feature columns in total. <b>Currently the model only uses data for
+populate more than one quartile, we end up with 108 feature columns in total. <b>Currently the model only uses data for
 36 month terms</b>. Extending this to other term lengths is future work.
 <p></p>
 <p class="lead">Results</p>
@@ -70,8 +70,8 @@ populate more than one quartile, we end up with 58 feature columns in total. <b>
 A commonly used metric to determine the performance of a binary classifier is the area under the
 <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">Receiver Operating Characteristic</a> (ROC) curve.
 Generally, a classifier has an area under the curve (auc) somewhere between 0.5 and 1.0. Values closer to 1.0 indicate stronger
-predictive power. Below is a plot of the current ROC curve for the Machine Lending classifier, with auc = 0.91. Plotted is the mean (red)
-and ± 3 standard deviations (blue) ROC curves for 3 fold training cross-validation sets.
+predictive power. Below is a plot of the current ROC curve for the Machine Lending classifier, with auc = 0.90. Plotted is the mean (red)
+and ± 3 standard deviations (blue) ROC curves for 20 fold training cross-validation sets.
 <script type="text/javascript" src="/static/plots/roc_auc_var.js"></script>
 <center>
 <script type="text/javascript" src="/static/plots/roc_auc_var.div.js"></script>
