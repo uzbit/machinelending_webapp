@@ -19,7 +19,7 @@ to optimize returns is <b>not trivial or obvious</b>. This is the reason Machine
 The term <i>Machine Lending</i> is ment to describe the fact that the
 loan default predictions on this site are calculated using
 state-of-the-art machine learning algorithms. The model used to make the predictions
-is constantly evolving and improving. See the <a target="_blank" href="#methods">Methods</a> for more details.
+is constantly evolving and improving. See the <a href="#methods">Methods</a> for more details.
 <p></p>
 <p class="lead">Data</p>
 <a name="data"></a>
@@ -28,7 +28,7 @@ data <a target="_blank" href="https://www.lendingclub.com/info/download-data.act
 This data ranges from interest rate and <a target="_blank" href="https://en.wikipedia.org/wiki/FICO">FICO</a>
 score to the number of months since the borrower was
 delinquent and their <a target="_blank" href="http://www.creditcards.com/glossary/term-revolving-balance.php">revolving balance</a>.
-Crucially, it also includes the current state of the loan. This means one can see if a loan
+Crucially, it also includes the current state of the loans. This means one can see if a loan
 was paid in full, charged off, or current. That information is used as the dependent variable
 when creating the Lending Club model. Everything else is used to train the models to predict loan default rate.
 <p></p>
@@ -36,8 +36,8 @@ In addition to historical data, Lending Club also provides information about the
 require funding via their <a target="_blank" href="https://www.lendingclub.com/developers/lc-api.action">API</a>. This enables
 algorithmic prediction and purchase of the cream-of-the-crop notes.
 <p></p>
-<p class="lead">Methods</p>
 <a name="methods"></a>
+<p class="lead">Methods</p>
 To make loan default predictions, Machine Lending uses what is called
 <a target="_blank" href="https://en.wikipedia.org/wiki/Ensemble_learning">ensemble learning</a>.
 In short, take a set of the appropriate machine learning algorithms and optimize
@@ -50,10 +50,11 @@ Machine Lending uses an optimized linear combination of predictions from the fol
 <a target="_blank" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">Random Forest, sklearn</a><br>
 <a target="_blank" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.ExtraTreesClassifier.html">Extra Trees, sklearn</a><br>
 <a target="_blank" href="http://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html">Gradient Boosting Classifier, sklearn</a><br>
+<a target="_blank" href="http://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPClassifier.html">Multi Layer Perceptron Classifier, sklearn</a><br>
 <a target="_blank" href="http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">K Neighbors Classifier, sklearn</a><br>
 <a target="_blank" href="https://github.com/dmlc/xgboost">Extreme Gradient Boosting, xgboost</a><br>
 <a target="_blank" href="https://keras.io/">Keras Neural Network, Keras</a><br>
-<a target="_blank" href="https://github.com/Lasagne/Lasagne">Lasane Neural Network, Lasange</a><br>
+<!--<a target="_blank" href="https://github.com/Lasagne/Lasagne">Lasane Neural Network, Lasange</a><br>-->
 
 Source code for the MetaClassifier is available on
 <a target="_blank" href="https://github.com/uzbit/mlutils">github</a>.
@@ -61,7 +62,7 @@ Source code for the MetaClassifier is available on
 The features used to make the data set include 44 of the columns from the historical data plus engineered features.
 Some of the engineered features utilize zip_code to lookup information about the region from the 2014 Census as well as Zillow housing
 information. By removing the loan_status and using it as the dependent variable, as well as removing columns that do not
-populate more than one quartile, we end up with 108 feature columns in total. <b>Currently the model only uses data for
+populate more than one quartile, we end up with 109 feature columns in total. <b>Currently the model only uses data for
 36 month terms</b>. Extending this to other term lengths is future work.
 <p></p>
 <p class="lead">Results</p>
@@ -70,18 +71,20 @@ A commonly used metric to determine the performance of a binary classifier is th
 <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">Receiver Operating Characteristic</a> (ROC) curve.
 Generally, a classifier has an area under the curve (auc) somewhere between 0.5 and 1.0. Values closer to 1.0 indicate stronger
 predictive power. Below is a plot of the current ROC curve for the Machine Lending classifier, with auc = 0.90. Plotted is the mean (red)
-and ± 3 standard deviations (blue) ROC curves for 20 fold training cross-validation sets.
+and ± 3 standard deviations (blue) ROC curves for 10 fold training cross-validation sets.
 <script type="text/javascript" src="/static/plots/roc_auc_var.js"></script>
-<center>
 <script type="text/javascript" src="/static/plots/roc_auc_var.div.js"></script>
-</center>
 <p></p>
 To get an idea of how the features are used, on can pull the relative feature importances from the tree based models (xgboost, ExtraTreesClassifier, etc.)
-and plot their relative importance. Below is a plot of the feature importances for the xgboost classifier.
+and plot their relative importance. Below is a plot of the average feature importances for the tree based models.
 <script type="text/javascript" src="/static/plots/feature_importance.js"></script>
-<center>
 <script type="text/javascript" src="/static/plots/feature_importance.div.js"></script>
-</center>
+<p></p>
+Since the model doesn't directly use grade, subgrade, or interest rate as input, it's nice to see that the grades match up well
+with the default probabilities. In the <a href="https://en.wikipedia.org/wiki/Box_plot">box plot</a> below, the distribution of default probabilities by grade is shown.
+The wiskers are at ±1.5 <a href="https://en.wikipedia.org/wiki/Interquartile_range">IQR</a>.
+<script type="text/javascript" src="/static/plots/default_probability_by_grade.js"></script>
+<script type="text/javascript" src="/static/plots/default_probability_by_grade.div.js"></script>
 
 <p class="lead">Disclaimer</p>
 The content included in this Website has been compiled from a variety of sources and is subject to change without notice as are any products, programs, offerings, or technical information described in this Website.

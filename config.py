@@ -10,6 +10,8 @@ DEBUG = True
 # http://clsc.net/tools-old/random-string-generator.php
 SECRET_KEY = 'N5Ovw4avRbwWcSYRb04V'
 
+SENDGRID_API_KEY = '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'
+
 WTF_CSRF_ENABLED = False
 
 # Connect to the database
