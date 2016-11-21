@@ -4,8 +4,9 @@
 <title>{% block title %}{% endblock %}</title>
 
 <!-- meta -->
-<meta name="description" content="">
-<meta name="author" content="">
+<meta name="description" content="Machine learning loan default prediction
+ for Lending Club and peer-to-peer marketplace lending platforms.">
+<meta name="author" content="Ted McCormack">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- /meta -->
 
@@ -24,10 +25,12 @@
 
 <!-- favicons -->
 <link rel="shortcut icon" href="/static/ico/favicon.png">
+<!--
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/ico/apple-touch-icon-144-precomposed.png">
 <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png">
 <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
 <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
+-->
 <link rel="shortcut icon" href="/static/ico/favicon.png">
 <!-- /favicons -->
 
@@ -65,9 +68,9 @@
 		  <ul class="nav navbar-nav">
 			<li {% if request.endpoint == 'lc.index' %} class="active" {% endif %}><a href="{{ url_for('lc.index') }}">Lending Club</a></li>
 			<li {% if request.endpoint == 'about.index' %} class="active" {% endif %}><a href="{{ url_for('about.index') }}">About</a></li>
-						<li {% if request.endpoint == 'contact.index' %} class="active" {% endif %}><a href="{{ url_for('contact.index') }}">Contact</a></li>
-						<!--
-						<li class="dropdown">
+			<li {% if request.endpoint == 'contact.index' %} class="active" {% endif %}><a href="{{ url_for('contact.index') }}">Contact</a></li>
+			<!--
+			<li class="dropdown">
 			  <a class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
 			  <ul class="dropdown-menu">
 				<li><a>Action</a></li>
@@ -79,7 +82,7 @@
 				<li><a>One more separated link</a></li>
 			  </ul>
 			</li>
-					-->
+			-->
 		  </ul>
 		  <ul class="nav navbar-nav pull-right">
 			<li><a href="{{ url_for('register.index') }}">Signup</a></li>
@@ -122,7 +125,7 @@
 	-->
   <!-- Google Analytics - Change UA-XXXXX-X to be your site's ID -->
   <script>
-  window._gaq = [['_setAccount','UAXXXXXXXX1'],['_trackPageview'],['_trackPageLoadTime']];
+  window._gaq = [['_setAccount','UA-87672396-1'],['_trackPageview'],['_trackPageLoadTime']];
   Modernizr.load({
 	load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
   });
