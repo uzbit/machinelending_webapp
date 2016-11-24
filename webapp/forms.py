@@ -1,4 +1,4 @@
-import sys
+
 from flask_wtf import FlaskForm
 from wtforms import TextField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, EqualTo, Length, Email
@@ -6,8 +6,6 @@ from flask import flash
 
 def flash_errors(form):
 	for field, errors in form.errors.items():
-		print errors
-		sys.stdout.flush()
 		for error in errors:
 			flash(u"Error in the %s field - %s" % (
 				getattr(form, field).label.text,
@@ -15,8 +13,8 @@ def flash_errors(form):
 			))
 
 class RegisterForm(FlaskForm):
-	name = TextField(
-		'Username', validators=[DataRequired(), Length(min=4, max=25)]
+	username = TextField(
+		'Username', validators=[DataRequired(), Length(min=4, max=50)]
 	)
 	email = TextField(
 		'Email', validators=[Email(), Length(min=6, max=40)]
