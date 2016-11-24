@@ -14,7 +14,7 @@ LendingClubJS.prototype.getCurrentLoans = function(){
 		}
 	).fail(function(jqxhr, textStatus, error ) {
 		var err = textStatus + ", " + error;
-	    console.log( "Request Failed: " + err );
+	  console.log( "Request Failed: " + err );
 	});
 };
 

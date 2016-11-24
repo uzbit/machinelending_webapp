@@ -1,13 +1,11 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
-
-from flask import Flask, render_template, request
-# from flask.ext.sqlalchemy import SQLAlchemy
-import logging
-from logging import Formatter, FileHandler
-from forms import *
 import os
+import logging
+from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+#from forms import *
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -15,17 +13,15 @@ import os
 
 app = Flask(__name__)
 app.config.from_object('config')
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 # Automatically tear down SQLAlchemy.
 '''
 @app.teardown_request
 def shutdown_session(exception=None):
     db_session.remove()
-'''
 
 # Login required decorator.
-'''
 def login_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
@@ -36,8 +32,8 @@ def login_required(test):
             return redirect(url_for('login'))
     return wrap
 '''
-# Error handlers.
 
+# Error handlers.
 @app.errorhandler(500)
 def internal_error(error):
     #db_session.rollback()
@@ -48,9 +44,9 @@ def not_found_error(error):
     return render_template('errors/404.html'), 404
 
 if not app.debug:
-    file_handler = FileHandler('error.log')
+    file_handler = logging.FileHandler('error.log')
     file_handler.setFormatter(
-        Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
+        logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
     )
     app.logger.setLevel(logging.INFO)
     file_handler.setLevel(logging.INFO)

@@ -1,14 +1,10 @@
 {% extends 'layouts/main.html' %}
-
 {% block title %}Lending Club{% endblock %}
 {% block content %}
 
-<div class="page-header">
-  <h1>Contact</h1>
-</div>
-
-<div class="well bs-component">
-<form method="post" class="form-horizontal">
+<div class="well bs-component col-lg-6" style="margin-top: 30px;float: left;clear: left;">
+  <form method="post" class="form-horizontal">
+  <h3 class="form-heading">Contact</h3>
 	{{ form.name(class_ = 'form-control', placeholder = form.name.label.text, required = true, autofocus = true) }}
 	{{ form.email(class_ = 'form-control', placeholder = form.email.label.text, required = true) }}
 	{{ form.comments(class_ = 'form-control', placeholder = form.comments.label.text, required = true, autofocus = true) }}
@@ -18,13 +14,14 @@
 </form>
 </div>
 <p></p>
-
+<div style="float: left;clear: left;">
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
+</div>
 
 
 {% endblock %}

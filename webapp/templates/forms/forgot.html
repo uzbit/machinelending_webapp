@@ -1,8 +1,9 @@
-{% extends 'layouts/form.html' %}
+{% extends 'layouts/main.html' %}
 {% block title %}Reset Password{% endblock %}
 {% block content %}
-  <form method="post" class="form form-reset">
-    <h3 class="form-heading">Reset Password <a href="{{ url_for('index.index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
+<div class="well bs-component col-lg-6 " style="margin-top: 30px;">
+  <form method="post" class="form-horizontal">
+    <h3 class="form-heading">Reset Password</h3> <!--<a href="{{ url_for('index.index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a>-->
     {{ form.email(class_ = 'form-control first-input last-input', placeholder = form.email.label.text) }}
     <p class="pull-left"><a href="{{ url_for('login.index') }}">Login</a></p>
     <p class="pull-right"><a href="{{ url_for('register.index') }}">Register</a></p>
@@ -10,5 +11,7 @@
 		<!--
 		<p>You must add database as well as Flask-Login to enable user management. See the <a href="http://www.realpython.com">Real Python</a> course for more info!</p>
 		-->
-		</form>
+	</form>
+</div>
+
 {% endblock %}
