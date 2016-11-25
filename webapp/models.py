@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import IntegrityError
 from config import SQLALCHEMY_DATABASE_URI
-# from sqlalchemy import Column, Integer, String
 from webapp import db
+from webapp.modules.utilities import print_log
 
 engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
 db_session = scoped_session(
@@ -25,13 +26,38 @@ class User(Base):
         self.username = username
         self.password = password
         self.email = email
+        self.authenticated = False
+        self.active = True
+        self.anonymous = False
 
     def __repr__(self):
         return '<User %r>' % self.username
 
+    def is_active(self):
+        return self.active
+
+    def get_id(self):
+        return self.id
+
+    def is_authenticated(self):
+        return self.authenticated
+
+    def is_anonymous(self):
+        return self.anonymous
+
     def commit_user(self):
         db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            db.session().rollback()
+            print_log(e)
+            if str(e).find('constraint failed: Users.username') >= 0:
+                raise Exception("Username: %s is already in use." % self.username)
+            elif str(e).find('constraint failed: Users.email') >= 0:
+                raise Exception("Email: %s is already in use." % self.email)
+            else:
+                raise Exception("Error in registration.")
 
 # Create tables.
 Base.metadata.create_all(bind=engine)

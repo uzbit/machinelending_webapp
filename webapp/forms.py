@@ -1,6 +1,6 @@
 
 from flask_wtf import FlaskForm
-from wtforms import TextField, PasswordField, TextAreaField
+from wtforms import TextField, PasswordField, TextAreaField, HiddenField
 from wtforms.validators import DataRequired, EqualTo, Length, Email
 from flask import flash
 
@@ -29,7 +29,7 @@ class RegisterForm(FlaskForm):
 	)
 
 class LoginForm(FlaskForm):
-	name = TextField('Username', [DataRequired()])
+	username = TextField('Username', [DataRequired()])
 	password = PasswordField('Password', [DataRequired()])
 
 class ForgotForm(FlaskForm):
