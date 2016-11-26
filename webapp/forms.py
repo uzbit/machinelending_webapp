@@ -14,10 +14,10 @@ def flash_errors(form):
 
 class RegisterForm(FlaskForm):
 	username = TextField(
-		'Username', validators=[DataRequired(), Length(min=4, max=50)]
+		'Username', validators=[DataRequired(), Length(min=4, max=100)]
 	)
 	email = TextField(
-		'Email', validators=[Email(), Length(min=6, max=40)]
+		'Email', validators=[Email(), Length(min=6, max=100)]
 	)
 	password = PasswordField(
 		'Password', validators=[DataRequired(), Length(min=6, max=100)]
@@ -34,10 +34,10 @@ class LoginForm(FlaskForm):
 
 class ForgotForm(FlaskForm):
 	email = TextField(
-		'Email', validators=[DataRequired(), Length(min=6, max=40)]
+		'Email', validators=[DataRequired(), Length(min=6, max=100)]
 	)
 
 class ContactForm(FlaskForm):
 	name = TextField('Name', [DataRequired()])
-	email = TextField('Email', validators=[Email(), Length(min=0, max=100)])
+	email = TextField('Email', validators=[Email(), Length(min=3, max=100)])
 	comments = TextAreaField('Comments', [DataRequired()])

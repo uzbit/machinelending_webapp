@@ -12,13 +12,13 @@ def index():
 	form = RegisterForm(flask.request.form)
 	if form.validate_on_submit():
 		password = form.password.data.encode('utf-8')
-		newUser = User(
+		new_user = User(
 			form.username.data,
 			bcrypt.hashpw(password, bcrypt.gensalt()),
 			form.email.data
 		)
 		try:
-			newUser.commit_user()
+			new_user.commit_user()
 			flask.flash("Registration Success!", 'success')
 			return flask.redirect(flask.url_for('login.index'))
 		except Exception as e:
