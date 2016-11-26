@@ -1,5 +1,4 @@
 import bcrypt
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
@@ -10,17 +9,17 @@ from config import SQLALCHEMY_DATABASE_URI
 from webapp import app
 from webapp.modules.utilities import print_log
 
-engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
-db_session = scoped_session(
-	sessionmaker(autocommit=True, autoflush=True, bind=engine)
-)
-Base = declarative_base()
-Base.query = db_session.query_property()
+# engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
+# db_session = scoped_session(
+# 	sessionmaker(autocommit=True, autoflush=True, bind=engine)
+# )
+# Base = declarative_base()
+# Base.query = db_session.query_property()
 
 db = SQLAlchemy(app)
 
 # http://flask-sqlalchemy.pocoo.org/2.1/quickstart/
-class User(Base):
+class User(db.Model):
 	__tablename__ = 'Users'
 
 	id = db.Column(db.Integer, primary_key=True)
@@ -74,7 +73,7 @@ class User(Base):
 	def get_by_username(username):
 		return User.query.filter_by(username=username).first()
 
-class UsersLCAccountInfo(Base):
+class UsersLCAccountInfo(db.Model):
 	__tablename__ = 'UsersLCAccountInfo'
 
 	id = db.Column(db.Integer, primary_key=True)
@@ -100,4 +99,5 @@ class UsersLCAccountInfo(Base):
 		return UsersLCAccountInfo.query.filter_by(user_id=user_id).first()
 
 # Create tables.
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine, checkfirst=True)
+db.create_all()
