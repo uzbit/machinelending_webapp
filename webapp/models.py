@@ -71,8 +71,8 @@ class User(Base):
 		return bcrypt.hashpw(plain_encoded, enc_encoded) == enc_encoded
 
 
-class UserSettings(Base):
-	__tablename__ = 'UsersSettings'
+class UsersLCAccountInfo(Base):
+	__tablename__ = 'UsersLCAccountInfo'
 
 	id = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
@@ -81,9 +81,10 @@ class UserSettings(Base):
 
 	def __init__(self, user, enc_lc_api_key, enc_lc_account_number):
 		self.user_id = user.id
+		self.enc_lc_api_key = enc_lc_api_key
+		self.enc_lc_account_number = enc_lc_account_number
 
-
-	def commit_user_settings(self):
+	def commit_user_lc_account_info(self):
 		db.session.add(self)
 		try:
 			db.session.commit()

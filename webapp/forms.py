@@ -10,7 +10,7 @@ def flash_errors(form):
 			flash(u"Error in the %s field - %s" % (
 				getattr(form, field).label.text,
 				error
-			))
+			), 'danger')
 
 class RegisterForm(FlaskForm):
 	username = TextField(

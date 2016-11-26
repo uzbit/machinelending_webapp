@@ -1,7 +1,7 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
-<div class="well bs-component col-lg-6" style="margin-top: 30px;float: left;clear: left;">
+<div class="well bs-component col-lg-6" style="margin-top: 30px; float: left; clear: left;">
   <form method="post" class="form-horizontal">
       <h3 class="form-heading">Register</h3> <!--<a href="{{ url_for('index.index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a>-->
       {{ form.username(class_ = 'form-control first-input', placeholder = form.username.label.text, required = true, autofocus = true) }}
