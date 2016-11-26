@@ -3,21 +3,26 @@
 #----------------------------------------------------------------------------#
 import os
 import logging
-from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+import flask
+
+from flask_login import LoginManager, current_user
 #from forms import *
 
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 app.config.from_object('config')
-db = SQLAlchemy(app)
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+#@app.before_request
+#def before_request():
+#    flask.g.user = current_user
 
 # Automatically tear down SQLAlchemy.
 '''
@@ -41,11 +46,11 @@ def login_required(test):
 @app.errorhandler(500)
 def internal_error(error):
     #db_session.rollback()
-    return render_template('errors/500.html'), 500
+    return flask.render_template('errors/500.html'), 500
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('errors/404.html'), 404
+    return flask.render_template('errors/404.html'), 404
 
 if not app.debug:
     file_handler = logging.FileHandler('error.log')
