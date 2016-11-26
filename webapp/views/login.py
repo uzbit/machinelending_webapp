@@ -29,6 +29,7 @@ def index():
 
 		if user and user.check_password(password):
 			login_user(user, remember=True)
+			flask.flash("Logged in.", 'success')
 			return flask.redirect(flask.url_for('index.index'))
 		else:
 			flask.flash("Login Error: Wrong username and password combination.", 'error')

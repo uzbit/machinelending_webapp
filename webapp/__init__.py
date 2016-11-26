@@ -45,7 +45,7 @@ def login_required(test):
 @login_required
 def logout():
 	logout_user()
-	#flask.flash("Logged out.", 'success')
+	flask.flash("Logged out.", 'success')
 	return flask.redirect(flask.url_for('index.index'))
 
 # Error handlers.
