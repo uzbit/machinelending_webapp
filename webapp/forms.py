@@ -28,6 +28,19 @@ class RegisterForm(FlaskForm):
 		EqualTo('password', message='Passwords must match')]
 	)
 
+class MLAccountInfoForm(FlaskForm):
+	email = TextField(
+		'Email', validators=[Email(), Length(min=6, max=100)]
+	)
+	password = PasswordField(
+		'Password', validators=[DataRequired(), Length(min=6, max=100)]
+	)
+	confirm = PasswordField(
+		'Repeat Password',
+		[DataRequired(),
+		EqualTo('password', message='Passwords must match')]
+	)
+
 class LoginForm(FlaskForm):
 	username = TextField('Username', [DataRequired()])
 	password = PasswordField('Password', [DataRequired()])
@@ -41,3 +54,7 @@ class ContactForm(FlaskForm):
 	name = TextField('Name', [DataRequired()])
 	email = TextField('Email', validators=[Email(), Length(min=3, max=100)])
 	comments = TextAreaField('Comments', [DataRequired()])
+
+class LCAccountInfoForm(FlaskForm):
+	lc_api_key = TextField('API Key', validators=[Length(min=6, max=100)])
+	lc_account_number = TextField('Lending Club Account Number', validators=[Length(min=6, max=100)])

@@ -5,4 +5,4 @@ forgot_blueprint = Blueprint('forgot', __name__)
 @forgot_blueprint.route('/forgot')
 def index():
 	form = ForgotForm(request.form)
-	return render_template('forms/forgot.html', form=form)
+	return render_template('pages/forgot.html', form=form)

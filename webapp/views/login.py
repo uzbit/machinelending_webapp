@@ -35,4 +35,4 @@ def index():
 			flask.flash("Login Error: Wrong username and password combination.", 'error')
 
 	flash_errors(form)
-	return flask.render_template('forms/login.html', form=form)
+	return flask.render_template('pages/login.html', form=form)

@@ -1,0 +1,14 @@
+{% extends 'layouts/settings.html' %}
+{% block title %}Machine Lending Account Info{% endblock %}
+{% block content %}
+{{ super() }}
+<div class="well bs-component col-lg-6" style="margin-top: 30px; float: left; clear: left;">
+  <form method="post" class="form-horizontal">
+      <h3 class="form-heading">Update Account Information</h3> <!--<a href="{{ url_for('index.index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a>-->
+      {{ form.email(class_ = 'form-control', placeholder = form.email.label.text, required = true) }}
+      {{ form.password(class_ = 'form-control', placeholder = form.password.label.text, required = true) }}
+      {{ form.confirm(class_ = 'form-control last-input', placeholder = form.confirm.label.text, required = true) }}
+      <input type="submit" value="Update" class="btn btn-primary btn-lg btn-block" >
+  </form>
+</div>
+{% endblock %}

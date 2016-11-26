@@ -11,7 +11,7 @@ from lcApi import app
 
 class lcApiView(MethodView):
     def get(self):
-        dataDir = os.path.join(app.config['APPLICATION_ROOT'], 'lcApi/data/recentLoans.pickle')
+        dataDir = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
         data = pickle.load(open(dataDir, 'rb'))
         return jsonify(data)
 

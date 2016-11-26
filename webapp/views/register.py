@@ -25,4 +25,4 @@ def index():
 			flask.flash(str(e))
 
 	flash_errors(form)
-	return flask.render_template('forms/register.html', form=form)
+	return flask.render_template('pages/register.html', form=form)

@@ -3,6 +3,8 @@ import os
 # Grabs the folder where the script runs.
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+BASE_DIR = basedir
+
 # Enable debug mode.
 DEBUG = True
 
