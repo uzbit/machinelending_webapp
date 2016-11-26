@@ -1,5 +1,5 @@
-import bcrypt
 import flask
+import bcrypt
 from webapp.forms import RegisterForm
 from webapp.forms import flash_errors
 from webapp.modules.utilities import print_log
@@ -18,11 +18,11 @@ def index():
 			form.email.data
 		)
 		try:
-			new_user.commit_user()
-			flask.flash("Registration Success!", 'success')
+			new_user.commit()
+			flask.flash("Registration success!", 'success')
 			return flask.redirect(flask.url_for('login.index'))
 		except Exception as e:
-			flask.flash(str(e))
+			flask.flash(str(e), 'danger')
 
 	flash_errors(form)
 	return flask.render_template('pages/register.html', form=form)

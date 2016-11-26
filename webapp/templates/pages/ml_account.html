@@ -6,8 +6,8 @@
   <form method="post" class="form-horizontal">
       <h3 class="form-heading">Update Account Information</h3> <!--<a href="{{ url_for('index.index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a>-->
       {{ form.email(class_ = 'form-control', placeholder = form.email.label.text, required = true) }}
-      {{ form.password(class_ = 'form-control', placeholder = form.password.label.text, required = true) }}
-      {{ form.confirm(class_ = 'form-control last-input', placeholder = form.confirm.label.text, required = true) }}
+      {{ form.password(class_ = 'form-control', placeholder = "New Password", required = true) }}
+      {{ form.confirm(class_ = 'form-control last-input', placeholder = "Repeat New Password", required = true) }}
       <input type="submit" value="Update" class="btn btn-primary btn-lg btn-block" >
   </form>
 </div>

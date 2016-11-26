@@ -51,7 +51,7 @@ class User(Base):
 	def get_id(self):
 		return self.id
 
-	def commit_user(self):
+	def commit(self):
 		db.session.add(self)
 		try:
 			db.session.commit()
@@ -70,27 +70,34 @@ class User(Base):
 		enc_encoded = self.enc_password.encode('utf-8')
 		return bcrypt.hashpw(plain_encoded, enc_encoded) == enc_encoded
 
+	@staticmethod
+	def get_by_username(username):
+		return User.query.filter_by(username=username).first()
 
 class UsersLCAccountInfo(Base):
 	__tablename__ = 'UsersLCAccountInfo'
 
 	id = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
-	enc_lc_api_key = db.Column(db.String(200), unique=True)
-	enc_lc_account_number = db.Column(db.String(200), unique=True)
+	enc_api_key = db.Column(db.String(200), unique=True)
+	enc_account_number = db.Column(db.String(200), unique=True)
 
-	def __init__(self, user, enc_lc_api_key, enc_lc_account_number):
+	def __init__(self, user, enc_api_key, enc_account_number):
 		self.user_id = user.id
-		self.enc_lc_api_key = enc_lc_api_key
-		self.enc_lc_account_number = enc_lc_account_number
+		self.enc_api_key = enc_api_key
+		self.enc_account_number = enc_account_number
 
-	def commit_user_lc_account_info(self):
+	def commit(self):
 		db.session.add(self)
 		try:
 			db.session.commit()
 		except IntegrityError as e:
 			db.session().rollback()
 			print_log(e)
+
+	@staticmethod
+	def get_by_user_id(user_id):
+		return UsersLCAccountInfo.query.filter_by(user_id=user_id).first()
 
 # Create tables.
 Base.metadata.create_all(bind=engine)

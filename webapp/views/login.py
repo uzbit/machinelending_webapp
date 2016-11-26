@@ -9,10 +9,6 @@ from webapp.modules.utilities import print_log
 
 login_blueprint = flask.Blueprint('login', __name__)
 
-def get_user(username):
-	user = User.query.filter_by(username=username).first()
-	return user
-
 @login_manager.user_loader
 def user_loader(user_id):
 	user = User.query.filter_by(id=int(user_id)).first()
@@ -25,14 +21,14 @@ def index():
 		username = form.username.data
 		password = form.password.data
 
-		user = get_user(username)
+		user = User.get_by_username(username)
 
 		if user and user.check_password(password):
 			login_user(user, remember=True)
 			flask.flash("Logged in.", 'success')
 			return flask.redirect(flask.url_for('index.index'))
 		else:
-			flask.flash("Login Error: Wrong username and password combination.", 'error')
+			flask.flash("Login error: Wrong username and password combination.", 'error')
 
 	flash_errors(form)
 	return flask.render_template('pages/login.html', form=form)

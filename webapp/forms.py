@@ -56,5 +56,5 @@ class ContactForm(FlaskForm):
 	comments = TextAreaField('Comments', [DataRequired()])
 
 class LCAccountInfoForm(FlaskForm):
-	lc_api_key = TextField('API Key', validators=[Length(min=6, max=100)])
-	lc_account_number = TextField('Lending Club Account Number', validators=[Length(min=6, max=100)])
+	api_key = TextField('API Key', validators=[Length(min=6, max=100)])
+	account_number = TextField('Lending Club Account Number', validators=[Length(min=6, max=100)])

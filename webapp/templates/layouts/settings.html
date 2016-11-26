@@ -12,9 +12,9 @@
 		{% endif %}>
 	<a href="{{ url_for('settings.ml') }}">Machine Lending</a></li>
 	<li
-	{% if request.endpoint == 'settings.lc' %}
-		class="active"
-	{% endif %}>
+		{% if request.endpoint == 'settings.lc' %}
+			class="active"
+		{% endif %}>
 	<a href="{{ url_for('settings.lc') }}">Lending Club</a></li>
 </div>
 <!--
