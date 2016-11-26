@@ -1,8 +1,8 @@
 import bcrypt
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, relationship
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy import create_engine
+# from sqlalchemy.orm import scoped_session, sessionmaker, relationship
+# from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import IntegrityError
 
 from config import SQLALCHEMY_DATABASE_URI
@@ -17,6 +17,7 @@ from webapp.modules.utilities import print_log
 # Base.query = db_session.query_property()
 
 db = SQLAlchemy(app)
+db.engine.raw_connection().connection.text_factory = str
 
 # http://flask-sqlalchemy.pocoo.org/2.1/quickstart/
 class User(db.Model):
@@ -78,8 +79,8 @@ class UsersLCAccountInfo(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
-	enc_api_key = db.Column(db.String(200), unique=True)
-	enc_account_number = db.Column(db.String(200), unique=True)
+	enc_api_key = db.Column(db.LargeBinary, unique=True)
+	enc_account_number = db.Column(db.LargeBinary, unique=True)
 
 	def __init__(self, user, enc_api_key, enc_account_number):
 		self.user_id = user.id
@@ -96,7 +97,7 @@ class UsersLCAccountInfo(db.Model):
 
 	@staticmethod
 	def get_by_user_id(user_id):
-		return UsersLCAccountInfo.query.filter_by(user_id=user_id).first()
+		return UsersLCAccountInfo.query.filter_by(user_id=int(user_id)).first()
 
 # Create tables.
 #Base.metadata.create_all(bind=engine, checkfirst=True)

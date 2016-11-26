@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from webapp.models import User, UsersLCAccountInfo
 from webapp.forms import flash_errors
 from webapp.forms import LCAccountInfoForm, MLAccountInfoForm
-from webapp.modules.utilities import print_log, encrypt
+from webapp.modules.utilities import print_log, encrypt_data, decrypt_data
 
 settings_blueprint = flask.Blueprint('settings', __name__)
 
@@ -24,16 +24,17 @@ def ml():
 @login_required
 def lc():
 	form = LCAccountInfoForm(flask.request.form)
-
 	account_info = UsersLCAccountInfo.get_by_user_id(
 		current_user.id
 	)
 	if account_info:
-		form.api_key.data = decrypt(
+		#form.api_key.data = account_info.enc_api_key
+		form.api_key.data = decrypt_data(
 			account_info.enc_api_key,
 			current_user.enc_password
 		)
-		form.account_number.data = decrypt(
+		#form.account_number.data = account_info.enc_account_number
+		form.account_number.data = decrypt_data(
 			account_info.enc_account_number,
 			current_user.enc_password
 		)
@@ -43,13 +44,13 @@ def lc():
 		account_number = form.account_number.data
 		new_account_info = UsersLCAccountInfo(
 			current_user,
-			encrypt(api_key, current_user.enc_password),
-			encrypt(account_number, current_user.enc_password)
+			encrypt_data(api_key, current_user.enc_password),
+			encrypt_data(account_number, current_user.enc_password)
 		)
 		try:
 			new_account_info.commit()
 			flask.flash("Saved LC account info.", 'success')
-			return flask.redirect(flask.url_for('login.index'))
+			return flask.redirect(flask.url_for('settings.lc'))
 		except Exception as e:
 			flask.flash(str(e), 'danger')
 

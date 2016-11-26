@@ -28,7 +28,7 @@ def index():
 			flask.flash("Logged in.", 'success')
 			return flask.redirect(flask.url_for('index.index'))
 		else:
-			flask.flash("Login error: Wrong username and password combination.", 'error')
+			flask.flash("Login error: Wrong username and password combination.", 'danger')
 
 	flash_errors(form)
 	return flask.render_template('pages/login.html', form=form)
