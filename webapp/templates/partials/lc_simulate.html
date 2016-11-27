@@ -1,0 +1,17 @@
+<script type="text/javascript" src="/static/js/utilities.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script type="text/javascript">
+$(getRangedSlider('#int_rate_slider', '#int_rate_display',
+	4.0, 30.0, 8.0, 17.0));
+</script>
+
+<div class="panel panel-primary" style="margin-top: 30px; width:30%;">
+	<div class="panel-heading">
+    <h3 class="panel-title">Parameters</h3>
+  </div>
+  <div class="panel-body">
+		Interest rate: <input type="text" id="int_rate_display" readonly style="border:0; font-weight:bold;">
+		<div id="int_rate_slider"></div>
+
+  </div>
+</div>

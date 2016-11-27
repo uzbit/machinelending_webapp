@@ -1,24 +1,30 @@
 function LendingClubJS() {
-	this.lcTableId = '#lcTable';
+	this.lcCurrentTableId = '#lcCurrentTable';
 	this.lcAsOfDateId = '#lcAsOfDate';
+	this.lcCurrentJson = {};
 }
 LendingClubJS.prototype = new LendingClubJS();
 LendingClubJS.prototype.constructor = LendingClubJS;
 
 LendingClubJS.prototype.getCurrentLoans = function(){
-	var this_ = this;
-
-	$.getJSON('lcApi/', {},
-		function(json){
-			this_.makeTable(json);
-		}
-	).fail(function(jqxhr, textStatus, error ) {
-		var err = textStatus + ", " + error;
-	  console.log( "Request Failed: " + err );
-	});
+	var _this = this;
+	if ($.isEmptyObject(this.lcCurrentJson)){
+		$.getJSON('lcApi/', {},
+			function(json){
+				_this.lcCurrentJson = json;
+				_this.makeTable();
+			}
+		).fail(function(jqxhr, textStatus, error ) {
+			var err = textStatus + ", " + error;
+		  console.log( "Request Failed: " + err );
+		});
+	} else {
+			_this.makeTable();
+	}
 };
 
-LendingClubJS.prototype.makeTable = function(json){
+LendingClubJS.prototype.makeTable = function(){
+	let json = this.lcCurrentJson;
 	let loans = json['loans'];
 	let asOfDate = json['asOfDate'];
 	let data = [];
@@ -39,7 +45,7 @@ LendingClubJS.prototype.makeTable = function(json){
 		data.push(row);
 	}
 	$(this.lcAsOfDateId).text("Data current as of: " + asOfDate);
-	$(this.lcTableId).DataTable({
+	$(this.lcCurrentTableId).DataTable({
 		 "data": data,
 		 "columns": [
 				 { title: "Loan Id" },
