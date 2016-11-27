@@ -14,19 +14,6 @@ settings_blueprint = flask.Blueprint('settings', __name__)
 def index():
 	return flask.render_template('layouts/settings.html')
 
-# def invalidate_lc_account_info():
-# 	account_info = UsersLCAccountInfo.get_by_user_id(
-# 		current_user.id
-# 	)
-# 	account_info.enc_api_key = None
-# 	account_info.enc_account_number = None
-# 	try:
-# 		account_info.commit()
-# 		flask.flash("Lending Club account credentials invalidated.", 'warning')
-# 		return flask.redirect(flask.url_for('settings.lc'))
-# 	except Exception as e:
-# 		flask.flash(str(e), 'danger')
-
 def get_lc_account_info():
 	account_info = UsersLCAccountInfo.get_by_user_id(
 		current_user.id
@@ -71,13 +58,14 @@ def ml():
 		password = form.password.data.encode('utf-8')
 		# Note, need to invalidate the lc settings...
 		if password:
+			account_info, api_key, account_number = get_lc_account_info()
 			current_user.enc_password = bcrypt.hashpw(
 				password, bcrypt.gensalt()
 			)
-			update_lc_account_info(*get_lc_account_info())
+			update_lc_account_info(account_info, api_key, account_number)
 		try:
 			current_user.commit()
-			flask.flash("Update success!", 'success')
+			flask.flash("Saved ML account info.", 'success')
 			return flask.redirect(flask.url_for('settings.ml'))
 		except Exception as e:
 			flask.flash(str(e), 'danger')

@@ -19,7 +19,7 @@ def index():
 		)
 		try:
 			new_user.commit()
-			flask.flash("Registration success!", 'success')
+			flask.flash("Registration complete.", 'success')
 			return flask.redirect(flask.url_for('settings.lc'))
 		except Exception as e:
 			flask.flash(str(e), 'danger')
