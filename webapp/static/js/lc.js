@@ -13,6 +13,8 @@ LendingClubLoans.prototype.getCurrentLoans = function(){
 			function(json){
 				_this.currentLoansJson = json;
 				_this.makeTable();
+				_this.setCurrentLoansJson(lcSimulator);
+				lcSimulator.update(null, null);
 			}
 		).fail(function(jqxhr, textStatus, error ) {
 			var err = textStatus + ", " + error;
@@ -21,6 +23,10 @@ LendingClubLoans.prototype.getCurrentLoans = function(){
 	} else {
 			_this.makeTable();
 	}
+};
+
+LendingClubLoans.prototype.setCurrentLoansJson = function(obj){
+	obj.currentLoansJson = this.currentLoansJson;
 };
 
 LendingClubLoans.prototype.makeTable = function(){
@@ -63,7 +69,6 @@ $(function() {
 	let lcLoans = new LendingClubLoans();
 	lcLoans.getCurrentLoans();
 });
-
 /*
 Important stuff here:
 $(function() {
