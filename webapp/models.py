@@ -17,7 +17,7 @@ from webapp.modules.utilities import print_log
 # Base.query = db_session.query_property()
 
 db = SQLAlchemy(app)
-db.engine.raw_connection().connection.text_factory = str
+#db.engine.raw_connection().connection.text_factory = str
 
 # http://flask-sqlalchemy.pocoo.org/2.1/quickstart/
 class User(db.Model):

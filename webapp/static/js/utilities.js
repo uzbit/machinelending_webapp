@@ -4,19 +4,19 @@ function getRangedSlider(
 	min, max, step,
 	init_min, init_max, change){
 	return function() {
-			$(slider_id).slider({
-				range: true,
-				min: min,
-				max: max,
-				step: step,
-				values: [init_min, init_max],
-				slide: function(event, ui) {
-					$(display_id).val(ui.values[0] + " - " + ui.values[1]);
-				},
-				change: change,
-			});
-			$(display_id).val($(slider_id).slider("values", 0) +
-				" - " + $(slider_id).slider("values", 1));
+		$(slider_id).slider({
+			range: true,
+			min: min,
+			max: max,
+			step: step,
+			values: [init_min, init_max],
+			change: change,
+			slide: function(event, ui) {
+				$(display_id).html(ui.values[0] + " - " + ui.values[1]);
+			},
+		});
+		$(display_id).html($(slider_id).slider("values", 0) +
+			" - " + $(slider_id).slider("values", 1));
 	}
 };
 

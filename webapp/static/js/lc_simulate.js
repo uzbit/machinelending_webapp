@@ -2,9 +2,15 @@
 function LendingClubSimulator() {
 	this.lcIntRateSliderId = '#lcIntRateSlider';
 	this.lcDefaultRateSliderId = '#lcDefaultRateSlider';
+	this.lcNumLoansDisplayId = '#lcNumLoansDisplay';
 	this.lcNumLoansFilteredDisplayId = '#lcNumLoansFilteredDisplay';
+	this.lcAvgDefaultRateDisplayId = '#lcAvgDefaultRateDisplay';
 	this.lcAvgIntRateDisplayId = '#lcAvgIntRateDisplay';
-	this.currentLoansJson = null;
+	this.lcAvgNARDisplayId = '#lcAvgNARDisplay';
+
+	this.currentLoansJson = {};
+	this.filteredLoansList = [];
+
 }
 LendingClubSimulator.prototype = new LendingClubSimulator();
 LendingClubSimulator.prototype.constructor = LendingClubSimulator;
@@ -13,7 +19,7 @@ let lcSimulator = new LendingClubSimulator();
 LendingClubSimulator.prototype.filterLoans = function(params){
 	let json = this.currentLoansJson;
 	let loans = json['loans'];
-	let filtered = [];
+	this.filteredLoansList = [];
 	for (let i = 0; i < loans.length; i++) {
 		let defaultRate = (100*loans[i]['defaultProb']).toFixed(2);
 		let intRate = loans[i]['intRate'].toFixed(2);
@@ -21,27 +27,35 @@ LendingClubSimulator.prototype.filterLoans = function(params){
 		let isInIntRateRange = intRate >= params['intRates'][0] && intRate <= params['intRates'][1];
 		let include = isInDefaultRateRange && isInIntRateRange;
 		if (include){
-			filtered.push(loans[i]);
+			this.filteredLoansList.push(loans[i]);
 		}
 	}
-	return filtered;
 };
 
 
 LendingClubSimulator.prototype.update = function(event, ui){
-	let defaultRates = getRangedSliderValues(lcSimulator.lcDefaultRateSliderId);
-	let intRates = getRangedSliderValues(lcSimulator.lcIntRateSliderId);
 	let params = {
-		'defaultRates': defaultRates,
-		'intRates': intRates,
+		'defaultRates': getRangedSliderValues(lcSimulator.lcDefaultRateSliderId),
+		'intRates': getRangedSliderValues(lcSimulator.lcIntRateSliderId),
 	};
-	let filtered = lcSimulator.filterLoans(params);
-	$(lcSimulator.lcNumLoansFilteredDisplayId).val(filtered.length);
+
+	lcSimulator.filterLoans(params);
+	let filtered = lcSimulator.filteredLoansList;
+
+	$(lcSimulator.lcNumLoansDisplayId).html(lcSimulator.currentLoansJson['loans'].length);
+	$(lcSimulator.lcNumLoansFilteredDisplayId).html(filtered.length);
+
 	if (filtered.length > 0){
-		let result = getMeanStd(filtered, 'intRate');
-		$(lcSimulator.lcAvgIntRateDisplayId).val(result[0].toFixed(2) + ' ± ' + result[1].toFixed(2));
+		let defaultProb = getMeanStd(filtered, 'defaultProb');
+		$(lcSimulator.lcAvgDefaultRateDisplayId).html((100*defaultProb[0]).toFixed(2) + ' ± ' + (100*defaultProb[1]).toFixed(2));
+		let intRate = getMeanStd(filtered, 'intRate');
+		$(lcSimulator.lcAvgIntRateDisplayId).html(intRate[0].toFixed(2) + ' ± ' + intRate[1].toFixed(2));
+		let NAR = (intRate[0] - 100*defaultProb[0] - 1.0).toFixed(2);
+		$(lcSimulator.lcAvgNARDisplayId).html(NAR);
 	} else{
-		$(lcSimulator.lcAvgIntRateDisplayId).val("N/A");
+		$(lcSimulator.lcAvgDefaultRateDisplayId).html("N/A");
+		$(lcSimulator.lcAvgIntRateDisplayId).html("N/A");
+		$(lcSimulator.lcAvgNARDisplayId).html("N/A");
 	}
 
 };

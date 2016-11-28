@@ -1,5 +1,4 @@
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script type="text/javascript">
 
 $(getRangedSlider('#lcDefaultRateSlider', '#default_rate_display',
@@ -14,10 +13,10 @@ $(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
     <h3 class="panel-title">Parameters</h3>
   </div>
   <div class="panel-body">
-		<h5>Default Rate (%): <input type="text" id="default_rate_display" readonly style="border:0;"></h5>
+		<h5>Default Rate: <div id="default_rate_display" style="display: inline-block;"></div>%</h5>
 		<div id="lcDefaultRateSlider" style="margin: 5px;"></div>
 
-		<h5>Interest Rate (%): <input type="text" id="int_rate_display" readonly style="border:0;"></h5>
+		<h5>Interest Rate: <div id="int_rate_display" style="display: inline-block;"></div>%</h5>
 		<div id="lcIntRateSlider" style="margin: 5px;"></div>
   </div>
 </div>
@@ -27,7 +26,10 @@ $(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
     <h3 class="panel-title">Results</h3>
   </div>
   <div class="panel-body">
-		<h5>Loans after filtering: <input type="text" id="lcNumLoansFilteredDisplay" readonly style="border:0;"></h5>
-		<h5>Average Interest rate: <input type="text" id="lcAvgIntRateDisplay" readonly style="border:0;"></h5>
+		<h5>Total Loans: <div id="lcNumLoansDisplay" style="display: inline-block;"></div></h5>
+		<h5>Filtered Loans: <div id="lcNumLoansFilteredDisplay" style="display: inline-block;"></div></h5>
+		<h5>Average Default Rate: <div id="lcAvgDefaultRateDisplay" style="display: inline-block;"></div>%</h5>
+		<h5>Average Interest Rate: <div id="lcAvgIntRateDisplay" style="display: inline-block;"></div>%</h5>
+		<h5>Average NAR: <div id="lcAvgNARDisplay" style="display: inline-block;"></div>%</h5>
   </div>
 </div>
