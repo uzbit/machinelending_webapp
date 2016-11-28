@@ -5,6 +5,7 @@
 <script type="text/javascript" src="/static/js/lc.js" defer></script>
 <script type="text/javascript" src="/static/js/utilities.js"></script>
 <script type="text/javascript" src="/static/js/lc_simulate.js"></script>
+<script type="text/javascript" src="/static/js/lc_invest.js"></script>
 
 <!-- <div class="page-header">
   <h2>Lending Club Loans</h2>
@@ -14,11 +15,11 @@
 	<li {% if request.endpoint == 'lc.index' %} class="active" {% endif %}>
 		<a href="#lc_current" data-toggle="tab">Current Loans</a>
 	</li>
-	<li {% if request.endpoint == 'lc#simulate' %} class="active" {% endif %}>
+	<li {% if request.endpoint == 'lc#lc_simulate' %} class="active" {% endif %}>
 		<a href="#lc_simulate" data-toggle="tab">Simluate</a>
 	</li>
-	<li {% if request.endpoint == 'lc#purchasing' %} class="active" {% endif %}>
-		<a href="#lc_purchase" data-toggle="tab">Purchase</a>
+	<li {% if request.endpoint == 'lc#lc_invest' %} class="active" {% endif %}>
+		<a href="#lc_invest" data-toggle="tab">Invest</a>
 	</li>
 </ul>
 
@@ -34,8 +35,8 @@
 		{% include "partials/lc_simulate.html" %}
 	</div>
 
-	<div id="lc_purchase" class="tab-pane fade" style="margin-bottom: 30px;">
-		{% include "partials/lc_purchase.html" %}
+	<div id="lc_invest" class="tab-pane fade" style="margin-bottom: 30px;">
+		{% include "partials/lc_invest.html" %}
 	</div>
 
 </div>

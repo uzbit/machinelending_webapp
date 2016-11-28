@@ -42,6 +42,8 @@ LendingClubSimulator.prototype.update = function(event, ui){
 	lcSimulator.filterLoans(params);
 	let filtered = lcSimulator.filteredLoansList;
 
+	lcInvest.update(lcSimulator);
+
 	$(lcSimulator.lcNumLoansDisplayId).html(lcSimulator.currentLoansJson['loans'].length);
 	$(lcSimulator.lcNumLoansFilteredDisplayId).html(filtered.length);
 
