@@ -1,17 +1,17 @@
-function LendingClubJS() {
+function LendingClubLoans() {
 	this.lcCurrentTableId = '#lcCurrentTable';
 	this.lcAsOfDateId = '#lcAsOfDate';
-	this.lcCurrentJson = {};
+	this.currentLoansJson = {};
 }
-LendingClubJS.prototype = new LendingClubJS();
-LendingClubJS.prototype.constructor = LendingClubJS;
+LendingClubLoans.prototype = new LendingClubLoans();
+LendingClubLoans.prototype.constructor = LendingClubLoans;
 
-LendingClubJS.prototype.getCurrentLoans = function(){
+LendingClubLoans.prototype.getCurrentLoans = function(){
 	var _this = this;
-	if ($.isEmptyObject(this.lcCurrentJson)){
+	if ($.isEmptyObject(this.currentLoansJson)){
 		$.getJSON('lcApi/', {},
 			function(json){
-				_this.lcCurrentJson = json;
+				_this.currentLoansJson = json;
 				_this.makeTable();
 			}
 		).fail(function(jqxhr, textStatus, error ) {
@@ -23,8 +23,8 @@ LendingClubJS.prototype.getCurrentLoans = function(){
 	}
 };
 
-LendingClubJS.prototype.makeTable = function(){
-	let json = this.lcCurrentJson;
+LendingClubLoans.prototype.makeTable = function(){
+	let json = this.currentLoansJson;
 	let loans = json['loans'];
 	let asOfDate = json['asOfDate'];
 	let data = [];
@@ -60,8 +60,8 @@ LendingClubJS.prototype.makeTable = function(){
 };
 
 $(function() {
-	let lcJS = new LendingClubJS();
-	lcJS.getCurrentLoans();
+	let lcLoans = new LendingClubLoans();
+	lcLoans.getCurrentLoans();
 });
 
 /*

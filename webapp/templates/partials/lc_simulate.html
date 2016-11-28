@@ -1,17 +1,24 @@
 <script type="text/javascript" src="/static/js/utilities.js"></script>
+<script type="text/javascript" src="/static/js/lc_simulate.js"></script>
+
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script type="text/javascript">
-$(getRangedSlider('#int_rate_slider', '#int_rate_display',
-	4.0, 30.0, 8.0, 17.0));
+$(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
+	0.0, 40.0, 0.1, 8.0, 17.0, lcSimulator.update));
+$(getRangedSlider('#lcDefaultRateSlider', '#default_rate_display',
+	0.0, 100.0, 0.1, 0.0, 25.0, lcSimulator.update));
 </script>
 
-<div class="panel panel-primary" style="margin-top: 30px; width:30%;">
+<div class="panel panel-primary" style="margin-top: 30px; width:40%;">
 	<div class="panel-heading">
     <h3 class="panel-title">Parameters</h3>
   </div>
   <div class="panel-body">
-		Interest rate: <input type="text" id="int_rate_display" readonly style="border:0; font-weight:bold;">
-		<div id="int_rate_slider"></div>
+		<h5>Interest Rate (%): <input type="text" id="int_rate_display" readonly style="border:0;"></h5>
+		<div id="lcIntRateSlider" style="margin: 5px;"></div>
+
+		<h5>Default Rate (%): <input type="text" id="default_rate_display" readonly style="border:0;"></h5>
+		<div id="lcDefaultRateSlider" style="margin: 5px;"></div>
 
   </div>
 </div>
