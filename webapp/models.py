@@ -1,4 +1,5 @@
 import bcrypt
+import flask
 from flask_sqlalchemy import SQLAlchemy
 # from sqlalchemy import create_engine
 # from sqlalchemy.orm import scoped_session, sessionmaker, relationship
@@ -7,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 
 from config import SQLALCHEMY_DATABASE_URI
 from webapp import app
-from webapp.modules.utilities import print_log
+from modules.utilities import print_log, encrypt_data, decrypt_data
 
 # engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
 # db_session = scoped_session(
@@ -98,6 +99,43 @@ class UsersLCAccountInfo(db.Model):
 	@staticmethod
 	def get_by_user_id(user_id):
 		return UsersLCAccountInfo.query.filter_by(user_id=int(user_id)).first()
+
+	@staticmethod
+	def get_lc_account_info(user):
+		account_info = UsersLCAccountInfo.get_by_user_id(
+			user.id
+		)
+		api_key = None
+		account_number = None
+		if account_info:
+			if account_info.enc_api_key:
+				api_key = decrypt_data(
+					account_info.enc_api_key,
+					user.enc_password
+				)
+			if account_info.enc_account_number:
+				account_number = decrypt_data(
+					account_info.enc_account_number,
+					user.enc_password
+				)
+		flask.session['api_key'] = api_key
+		flask.session['account_number'] = account_number
+
+		return account_info, api_key, account_number
+
+	@staticmethod
+	def update_lc_account_info(user, account_info, api_key, account_number):
+		if account_info:
+			flask.session['api_key'] = api_key
+			flask.session['account_number'] = account_number
+
+			account_info.enc_api_key = encrypt_data(
+				api_key, user.enc_password
+			)
+			account_info.enc_account_number = encrypt_data(
+				account_number, user.enc_password
+			)
+			account_info.commit()
 
 # Create tables.
 #Base.metadata.create_all(bind=engine, checkfirst=True)

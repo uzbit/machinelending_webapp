@@ -5,7 +5,7 @@ from webapp import login_manager
 from webapp.models import db, User
 from webapp.forms import LoginForm
 from webapp.forms import flash_errors
-from webapp.modules.utilities import print_log
+from modules.utilities import print_log
 
 login_blueprint = flask.Blueprint('login', __name__)
 

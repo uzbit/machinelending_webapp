@@ -9,7 +9,7 @@ LendingClubLoans.prototype.constructor = LendingClubLoans;
 LendingClubLoans.prototype.getCurrentLoans = function(){
 	var _this = this;
 	if ($.isEmptyObject(this.currentLoansJson)){
-		$.getJSON('lcApi/', {},
+		$.getJSON('lcApi/listedLoans/', {},
 			function(json){
 				_this.currentLoansJson = json;
 				_this.makeTable();

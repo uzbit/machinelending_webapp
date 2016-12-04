@@ -36,7 +36,7 @@ LendingClubInvest.prototype.update = function(loanList){
 
 LendingClubInvest.prototype.makeTable = function(){
 	let loans = this.filteredLoansList;
-	console.log(loans);
+	//console.log(loans);
 	let data = [];
 	let columns = ['id', 'loanAmount', 'intRate', 'subGrade', 'purpose', 'term', 'defaultProb'];
 	for (let i = 0; i < loans.length; i++) {
@@ -55,7 +55,7 @@ LendingClubInvest.prototype.makeTable = function(){
 		data.push(row);
 	}
 	//$(this.lcAsOfDateId).text("Data current as of: " + asOfDate);
-	console.log($(this.lcCurrentTableId));
+	//console.log($(this.lcCurrentTableId));
 	columns = [
 			{ title: "Loan Id" },
 			{ title: "Loan Amount" },
