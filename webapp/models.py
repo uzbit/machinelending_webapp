@@ -1,3 +1,4 @@
+import os
 import bcrypt
 import flask
 from flask_sqlalchemy import SQLAlchemy
@@ -101,13 +102,13 @@ class UsersLCAccountInfo(db.Model):
 		return UsersLCAccountInfo.query.filter_by(user_id=int(user_id)).first()
 
 	@staticmethod
-	def get_lc_account_info(user):
+	def get_lc_account_info(user, async=False):
 		account_info = UsersLCAccountInfo.get_by_user_id(
 			user.id
 		)
-		api_key = None
-		account_number = None
-		if account_info:
+
+		def decrypt_info():
+			api_key, account_number = None, None
 			if account_info.enc_api_key:
 				api_key = decrypt_data(
 					account_info.enc_api_key,
@@ -118,6 +119,26 @@ class UsersLCAccountInfo(db.Model):
 					account_info.enc_account_number,
 					user.enc_password
 				)
+			return api_key, account_number
+
+		api_key, account_number = None, None
+		if 'api_key' in flask.session:
+			api_key = flask.session['api_key']
+
+		if 'account_number' in flask.session:
+			account_number = flask.session['account_number']
+
+		print_log(account_number)
+		print_log(api_key)
+
+		if not (api_key and account_number) and account_info:
+			if async:
+				newpid = os.fork()
+				if newpid == 0:
+					api_key, account_number = decrypt_info()
+			else:
+				api_key, account_number = decrypt_info()
+
 		flask.session['api_key'] = api_key
 		flask.session['account_number'] = account_number
 
