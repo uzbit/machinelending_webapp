@@ -27,8 +27,8 @@ LendingClubInvest.prototype.getCurrentLoans = function(){
 	}
 };*/
 
-LendingClubInvest.prototype.update = function(obj){
- 	this.filteredLoansList = obj.filteredLoansList;
+LendingClubInvest.prototype.update = function(loanList){
+ 	this.filteredLoansList = loanList;
 	if (!$.isEmptyObject(this.filteredLoansList)){
 		this.makeTable();
 	}
@@ -55,18 +55,24 @@ LendingClubInvest.prototype.makeTable = function(){
 		data.push(row);
 	}
 	//$(this.lcAsOfDateId).text("Data current as of: " + asOfDate);
+	console.log($(this.lcCurrentTableId));
+	columns = [
+			{ title: "Loan Id" },
+			{ title: "Loan Amount" },
+			{ title: "Interest Rate (%)" },
+			{ title: "Grade" },
+			{ title: "Purpose" },
+			{ title: "Term" },
+			{ title: "Default Probability (%)" },
+	];
+	if ($.fn.dataTable.isDataTable(this.lcCurrentTableId)){
+		table = $(this.lcCurrentTableId).DataTable();
+		table.destroy();
+	}
 	$(this.lcCurrentTableId).DataTable({
-		 "data": data,
-		 "columns": [
-				 { title: "Loan Id" },
-				 { title: "Loan Amount" },
-				 { title: "Interest Rate (%)" },
-				 { title: "Grade" },
-				 { title: "Purpose" },
-				 { title: "Term" },
-				 { title: "Default Probability (%)" },
-		 ]
- 	});
+		"data": data,
+		"columns": columns,
+	});
 };
 
 $(function() {
