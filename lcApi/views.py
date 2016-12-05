@@ -12,7 +12,7 @@ from modules.utilities import print_log
 # Views.
 #----------------------------------------------------------------------------#
 
-class LCListedLoansView(MethodView):
+class ListedLoansView(MethodView):
 	def get(self):
 		dataDir = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
 		data = pickle.load(open(dataDir, 'rb'))
@@ -22,9 +22,9 @@ class LCListedLoansView(MethodView):
 	def post(self):
 		pass
 
-app.add_url_rule('/listedLoans/', view_func=LCListedLoansView.as_view('/listedLoans/'))
+app.add_url_rule('/listedLoans/', view_func=ListedLoansView.as_view('/listedLoans/'))
 
-class LCNotesOwnedView(MethodView):
+class NotesOwnedView(MethodView):
 	def get(self):
 		if 'api_key' in flask.session \
 	 	and 'account_number' in flask.session:
@@ -41,4 +41,4 @@ class LCNotesOwnedView(MethodView):
 	def post(self):
 		pass
 
-app.add_url_rule('/notesOwned/', view_func=LCNotesOwnedView.as_view('/notesOwned/'))
+app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'))
