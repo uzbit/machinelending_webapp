@@ -36,7 +36,7 @@ class NotesOwnedView(MethodView):
 				test=False
 			)
 			data = lcApi.getNotesOwned()
-		return data
+		return flask.jsonify({"notesOwned": data})
 
 	def post(self):
 		pass
