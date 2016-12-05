@@ -7,6 +7,8 @@ function LendingClubSimulator() {
 	this.lcAvgDefaultRateDisplayId = '#lcAvgDefaultRateDisplay';
 	this.lcAvgIntRateDisplayId = '#lcAvgIntRateDisplay';
 	this.lcAvgNARDisplayId = '#lcAvgNARDisplay';
+	this.lcCurrentTableId = '#lcInvestTable';
+	this.lcAsOfDateId = '#lcAsOfDate';
 
 	this.currentLoansJson = {};
 	this.filteredLoansList = [];
@@ -32,6 +34,15 @@ LendingClubSimulator.prototype.filterLoans = function(params){
 	}
 };
 
+
+LendingClubSimulator.prototype.simulate = function(defaultRate, term){
+	for (let i = 0; i < term; i++){
+		if (math.random() >= defaultRate)
+			return i;
+	}
+	return term;
+};
+// NOTE: Calculate the chargoff distribution funciton from dataset.
 
 LendingClubSimulator.prototype.update = function(event, ui){
 	let params = {
@@ -59,9 +70,48 @@ LendingClubSimulator.prototype.update = function(event, ui){
 		$(lcSimulator.lcAvgIntRateDisplayId).html("N/A");
 		$(lcSimulator.lcAvgNARDisplayId).html("N/A");
 	}
-
+	//if (!$.isEmptyObject(lcSimulator.filteredLoansList)){
+		lcSimulator.makeTable();
+	//}
 };
 
-// $(function() {
-//
-// });
+LendingClubSimulator.prototype.makeTable = function(){
+	let loans = this.filteredLoansList;
+	//console.log(loans);
+	let data = [];
+	let columns = ['id', 'loanAmount', 'intRate', 'subGrade', 'purpose', 'term', 'defaultProb'];
+	for (let i = 0; i < loans.length; i++) {
+		let row = [];
+		for (let j = 0; j < columns.length; j++){
+			let col = columns[j];
+			let val = loans[i][col];
+			if (col == 'id'){
+				val = "<a target='_blank' href='https://www.lendingclub.com/browse/loanDetail.action?loan_id="+val+"'>"+val+"</a>";
+			}
+			if (col == 'defaultProb'){
+				val = (100*val).toFixed(2)
+			}
+			row.push(val);
+		}
+		data.push(row);
+	}
+	//$(this.lcAsOfDateId).text("Data current as of: " + asOfDate);
+	//console.log($(this.lcCurrentTableId));
+	columns = [
+			{ title: "Loan Id" },
+			{ title: "Loan Amount" },
+			{ title: "Interest Rate (%)" },
+			{ title: "Grade" },
+			{ title: "Purpose" },
+			{ title: "Term" },
+			{ title: "Default Probability (%)" },
+	];
+	if ($.fn.dataTable.isDataTable(this.lcCurrentTableId)){
+		table = $(this.lcCurrentTableId).DataTable();
+		table.destroy();
+	}
+	$(this.lcCurrentTableId).DataTable({
+		"data": data,
+		"columns": columns,
+	});
+};

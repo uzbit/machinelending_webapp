@@ -1,5 +1,4 @@
 import requests, os, json
-import cPickle as pickle
 
 class LendingClubApi(object):
 	API_VERSION = 'v1'
@@ -7,18 +6,10 @@ class LendingClubApi(object):
 	def __init__(self, apiKey,
 			accountId=None,
 			test=True,
-			refresh=True
 		):
 		self.__apiKey = apiKey
 		self.__accountId = accountId
 		self.__apiUrlBase = 'https://api.lendingclub.com/api/investor/%s/' % LendingClubApi.API_VERSION
-		self.__backupDir = os.path.join(os.path.dirname(__file__), 'backup')
-		self.__allLoansPickle = os.path.join(self.__backupDir, 'allLoans.pickle')
-		self.__recentLoansPickle = os.path.join(self.__backupDir, 'recentLoans.pickle')
-		if not os.path.exists(self.__backupDir):
-			os.makedirs(self.__backupDir)
-
-		self.__refresh = refresh
 		self.__test = test
 
 	def makeRequest(self, postfix, params=None, method=None):
@@ -42,26 +33,17 @@ class LendingClubApi(object):
 			print request.reason
 
 	def getRecentLoans(self):
-		if not self.__refresh and os.path.exists(self.__recentLoansPickle):
-			return pickle.load(open(self.__recentLoansPickle, 'rb'))
 		postfix = 'loans/listing'
 		result = self.makeRequest(postfix)
-		pickle.dump(result, open(self.__recentLoansPickle, 'wb'))
 		return result
 
 	def getAllLoans(self):
-		if not self.__refresh and os.path.exists(self.__allLoansPickle):
-			return pickle.load(open(self.__allLoansPickle, 'rb'))
 		postfix = 'loans/listing'
 		params = {'showAll': 'true'}
 		result = self.makeRequest(postfix, params=params, method="GET")
-		pickle.dump(result, open(self.__allLoansPickle, 'wb'))
 		return result
 
 	def getNotesOwned(self):
-		notesOwnedPickle = os.path.join(self.__backupDir, 'notes_owned.pickle')
-		if not self.__refresh and os.path.exists(notesOwnedPickle):
-			return pickle.load(open(notesOwnedPickle, 'rb'))
 		postfix = 'accounts/%s/notes' % self.__accountId
 		return self.makeRequest(postfix)['myNotes']
 

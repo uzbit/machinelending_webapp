@@ -127,10 +127,7 @@ class UsersLCAccountInfo(db.Model):
 
 		if 'account_number' in flask.session:
 			account_number = flask.session['account_number']
-
-		print_log(account_number)
-		print_log(api_key)
-
+			
 		if not (api_key and account_number) and account_info:
 			if async:
 				newpid = os.fork()

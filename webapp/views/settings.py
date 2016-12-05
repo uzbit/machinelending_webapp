@@ -6,7 +6,6 @@ from webapp.models import User, UsersLCAccountInfo
 from webapp.forms import flash_errors
 from webapp.forms import LCAccountInfoForm, MLAccountInfoForm
 
-
 settings_blueprint = flask.Blueprint('settings', __name__)
 
 @settings_blueprint.route('/settings', methods=['get', 'post'])

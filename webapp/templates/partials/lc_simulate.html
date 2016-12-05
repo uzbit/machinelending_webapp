@@ -8,7 +8,11 @@ $(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
 
 </script>
 
-<div class="panel panel-primary" style="width:40%; float: left; clear: left;">
+<div style="width:65%; float: right; clear: right;">
+		<table id="lcInvestTable" class="display"></table>
+</div>
+
+<div class="panel panel-primary" style="width:30%; float: left; clear: left;">
 	<div class="panel-heading">
     <h3 class="panel-title">Parameters</h3>
   </div>
@@ -21,9 +25,9 @@ $(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
   </div>
 </div>
 
-<div class="panel panel-success" style="width:40%; float: right; clear: right;">
+<div class="panel panel-success" style="width:30%; float: left; clear: left;">
 	<div class="panel-heading">
-    <h3 class="panel-title">Results</h3>
+    <h3 class="panel-title">Summary</h3>
   </div>
   <div class="panel-body">
 		<h5>Total Loans: <div id="lcNumLoansDisplay" style="display: inline-block;"></div></h5>
@@ -33,5 +37,7 @@ $(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
 		<h5>Average NAR: <div id="lcAvgNARDisplay" style="display: inline-block;"></div>%</h5>
   </div>
 </div>
+
+
 
 <!-- <a href="/lc#lc_invest" class="btn btn-primary" data-toggle="tab" style="float: right; clear: right;">Invest</a> -->
