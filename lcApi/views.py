@@ -28,15 +28,18 @@ class NotesOwnedView(MethodView):
 	def get(self):
 		if 'api_key' in flask.session \
 	 	and 'account_number' in flask.session:
-			api_key = flask.session['api_key']
-			account_number = flask.session['account_number']
-			lcApi = LendingClubApi(
-				api_key,
-				accountId=account_number,
-				test=False
-			)
-			data = lcApi.getNotesOwned()
-			return flask.jsonify({"notesOwned": data})
+			try:
+				api_key = flask.session['api_key']
+				account_number = flask.session['account_number']
+				lcApi = LendingClubApi(
+					api_key,
+					accountId=account_number,
+					test=False
+				)
+				data = lcApi.getNotesOwned()
+				return flask.jsonify({"notesOwned": data})
+			except Exception as e:
+				return flask.jsonify({'danger': str(e)})
 		return flask.jsonify({})
 
 	def post(self):
