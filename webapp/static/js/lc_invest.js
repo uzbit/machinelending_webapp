@@ -8,6 +8,7 @@ let lcInvest = new LendingClubInvest();
 
 LendingClubInvest.prototype.getNotesOwned = function(){
 	var _this = this;
+	return;
 	if ($.isEmptyObject(this.currentLoansJson)){
 		$.getJSON('lcApi/notesOwned/', {},
 			function(json){

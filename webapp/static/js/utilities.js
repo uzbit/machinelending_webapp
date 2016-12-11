@@ -1,4 +1,29 @@
 
+function getSlider(
+	slider_id, display_id,
+	min, max, step,
+	init, change){
+	return function() {
+		$(slider_id).slider({
+			range: false,
+			min: min,
+			max: max,
+			step: step,
+			value: init,
+			change: change,
+			slide: function(event, ui) {
+				$(display_id).html(ui.value);
+			},
+		});
+		$(display_id).html($(slider_id).slider("value"));
+	}
+};
+
+function getSliderValue(id){
+	let value = $(id).slider("value");
+	return value;
+};
+
 function getRangedSlider(
 	slider_id, display_id,
 	min, max, step,
