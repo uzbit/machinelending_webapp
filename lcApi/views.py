@@ -14,13 +14,16 @@ from modules.utilities import print_log
 
 class ListedLoansView(MethodView):
 	def get(self):
-		dataDir = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
-		data = pickle.load(open(dataDir, 'rb'))
-		print_log(flask.session)
-		return flask.jsonify(data)
+		try:
+			dataDir = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
+			data = pickle.load(open(dataDir, 'rb'))
+			#print_log(flask.session)
+			return flask.jsonify(data)
+		except Exception as e:
+			return flask.jsonify({'error': str(e)})
 
 	def post(self):
-		pass
+		return flask.jsonify({})
 
 app.add_url_rule('/listedLoans/', view_func=ListedLoansView.as_view('/listedLoans/'))
 
@@ -39,10 +42,10 @@ class NotesOwnedView(MethodView):
 				data = lcApi.getNotesOwned()
 				return flask.jsonify({"notesOwned": data})
 			except Exception as e:
-				return flask.jsonify({'danger': str(e)})
+				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
 
 	def post(self):
-		pass
+		return flask.jsonify({})
 
 app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'))
