@@ -68,22 +68,22 @@ LendingClubSimulator.prototype.simulate = function(loan, params){
 	//console.log(payoffProb/term);
 	for (let i = 0; i < N; i ++){
 		let defaulted = false;
-		let paidoffTerm = 0;
+		let paidoffTerm = -1;
 		for (let j = 0; j < term; j++){
 			if (math.random() <= defaultProb/term){
 				returns.push(100.*((monthlyPayment*j)/loanAmount - 1));
 				defaulted = true;
 				break;
 			}
-			if (math.random() <= payoffProb/term){
-				paidoffTerm = j+1;
+			if (math.random() <= payoffProb){
+				paidoffTerm = j;
 				break;
 			}
 		}
 		//console.log(defaulted + " - " + paidoffTerm);
-		if (!defaulted && paidoffTerm == 0){
+		if (!defaulted && paidoffTerm == -1){
 			returns.push(100.*(totalPaid/loanAmount - 1));
-		} else if (paidoffTerm > 0){
+		} else if (paidoffTerm >= 0){
 			let remainingBalance = this.remainingBalance(intRate, paidoffTerm, monthlyPayment);
 			let paid = (monthlyPayment*paidoffTerm) + remainingBalance;
 			let ret = 100.*(paid/loanAmount - 1);
