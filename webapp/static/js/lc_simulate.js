@@ -8,7 +8,7 @@ function LendingClubSimulator() {
 	this.lcAvgDefaultRateDisplayId = '#lcAvgDefaultRateDisplay';
 	this.lcAvgIntRateDisplayId = '#lcAvgIntRateDisplay';
 	this.lcAvgSimulatedReturnDisplayId = '#lcAvgSimulatedReturnDisplay';
-	this.lcCurrentTableId = '#lcInvestTable';
+	this.lcCurrentTableId = '#lcSimulateTable';
 	this.lcAsOfDateId = '#lcAsOfDate';
 
 	this.currentLoansJson = {};
@@ -108,7 +108,7 @@ LendingClubSimulator.prototype.update = function(event, ui){
 
 	lcSimulator.filterLoans(params);
 	let filtered = lcSimulator.filteredLoansList;
-
+	
 	lcInvest.update(filtered);
 
 	let simulatedReturns = [];
