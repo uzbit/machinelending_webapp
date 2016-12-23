@@ -5,10 +5,15 @@ $(getRangedSlider('#lcDefaultRateSlider', '#default_rate_display',
 	0.0, 50.0, 0.1, 0.0, 25.0, lcSimulator.update));
 $(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
 	0.0, 40.0, 0.1, 8.0, 17.0, lcSimulator.update));
-
+$(getSlider('#lcEarlyPayoffRateSlider', '#early_payoff_rate_display',
+	0.0, 100.0, 0.1, 2.5, lcSimulator.update));
 </script>
 
-<div class="panel panel-primary" style="width:40%; float: left; clear: left;">
+<div style="width:65%; float: right; clear: right;">
+		<table id="lcSimulateTable" class="display"></table>
+</div>
+
+<div class="panel panel-primary" style="width:30%; float: left; clear: left;">
 	<div class="panel-heading">
     <h3 class="panel-title">Parameters</h3>
   </div>
@@ -18,20 +23,26 @@ $(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
 
 		<h5>Interest Rate: <div id="int_rate_display" style="display: inline-block;"></div>%</h5>
 		<div id="lcIntRateSlider" style="margin: 5px;"></div>
-  </div>
+
+		<h5>Early Payoff Rate: <div id="early_payoff_rate_display" style="display: inline-block;"></div>%</h5>
+		<div id="lcEarlyPayoffRateSlider" style="margin: 5px;"></div>
+
+	</div>
 </div>
 
-<div class="panel panel-success" style="width:40%; float: right; clear: right;">
+<div class="panel panel-success" style="width:30%; float: left; clear: left;">
 	<div class="panel-heading">
-    <h3 class="panel-title">Results</h3>
+    <h3 class="panel-title">Summary</h3>
   </div>
   <div class="panel-body">
 		<h5>Total Loans: <div id="lcNumLoansDisplay" style="display: inline-block;"></div></h5>
 		<h5>Filtered Loans: <div id="lcNumLoansFilteredDisplay" style="display: inline-block;"></div></h5>
 		<h5>Average Default Rate: <div id="lcAvgDefaultRateDisplay" style="display: inline-block;"></div>%</h5>
 		<h5>Average Interest Rate: <div id="lcAvgIntRateDisplay" style="display: inline-block;"></div>%</h5>
-		<h5>Average NAR: <div id="lcAvgNARDisplay" style="display: inline-block;"></div>%</h5>
+		<h5>Simulated Full Term Rate: <div id="lcAvgSimulatedReturnDisplay" style="display: inline-block;"></div>%</h5>
   </div>
 </div>
+
+
 
 <!-- <a href="/lc#lc_invest" class="btn btn-primary" data-toggle="tab" style="float: right; clear: right;">Invest</a> -->

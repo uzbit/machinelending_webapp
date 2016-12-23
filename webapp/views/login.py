@@ -2,10 +2,10 @@
 import flask
 from flask_login import login_user, login_required
 from webapp import login_manager
-from webapp.models import db, User
+from webapp.models import User, UsersLCAccountInfo
 from webapp.forms import LoginForm
 from webapp.forms import flash_errors
-from webapp.modules.utilities import print_log
+from modules.utilities import print_log
 
 login_blueprint = flask.Blueprint('login', __name__)
 
@@ -25,6 +25,7 @@ def index():
 
 		if user and user.check_password(password):
 			login_user(user, remember=True)
+			UsersLCAccountInfo.get_lc_account_info(user, async=True)
 			flask.flash("Logged in.", 'success')
 			return flask.redirect(flask.url_for('index.index'))
 		else:

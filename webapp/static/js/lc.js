@@ -9,7 +9,7 @@ LendingClubLoans.prototype.constructor = LendingClubLoans;
 LendingClubLoans.prototype.getCurrentLoans = function(){
 	var _this = this;
 	if ($.isEmptyObject(this.currentLoansJson)){
-		$.getJSON('lcApi/', {},
+		$.getJSON('lcApi/listedLoans/', {},
 			function(json){
 				_this.currentLoansJson = json;
 				_this.makeTable();
@@ -69,16 +69,3 @@ $(function() {
 	let lcLoans = new LendingClubLoans();
 	lcLoans.getCurrentLoans();
 });
-/*
-Important stuff here:
-$(function() {
-	 $('a#calculate').bind('click', function() {
-		 $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
-			 a: $('input[name="a"]').val(),
-			 b: $('input[name="b"]').val()
-		 }, function(data) {
-			 $("#result").text(data.result);
-		 });
-		 return false;
-	 });
- });*/

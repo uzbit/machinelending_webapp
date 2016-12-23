@@ -2,11 +2,14 @@
 function LendingClubSimulator() {
 	this.lcIntRateSliderId = '#lcIntRateSlider';
 	this.lcDefaultRateSliderId = '#lcDefaultRateSlider';
+	this.lcEarlyPayoffRateSlider = '#lcEarlyPayoffRateSlider';
 	this.lcNumLoansDisplayId = '#lcNumLoansDisplay';
 	this.lcNumLoansFilteredDisplayId = '#lcNumLoansFilteredDisplay';
 	this.lcAvgDefaultRateDisplayId = '#lcAvgDefaultRateDisplay';
 	this.lcAvgIntRateDisplayId = '#lcAvgIntRateDisplay';
-	this.lcAvgNARDisplayId = '#lcAvgNARDisplay';
+	this.lcAvgSimulatedReturnDisplayId = '#lcAvgSimulatedReturnDisplay';
+	this.lcCurrentTableId = '#lcSimulateTable';
+	this.lcAsOfDateId = '#lcAsOfDate';
 
 	this.currentLoansJson = {};
 	this.filteredLoansList = [];
@@ -33,16 +36,86 @@ LendingClubSimulator.prototype.filterLoans = function(params){
 };
 
 
+LendingClubSimulator.prototype.totalPaid = function(intRate, loanAmount, term){
+	let r = intRate/12/100.;
+	let t = term;
+	let P = loanAmount;
+	let A = r*P*math.pow(1+r, t)/(math.pow(1+r, t) - 1);
+	return A*t;
+}
+
+LendingClubSimulator.prototype.remainingBalance = function(
+		intRate, term, payment){
+	let r = intRate/12/100.;
+	let n = term;
+	let P = payment;
+	let rb = P*(1-math.pow(1+r, -(36-n)))/r;
+	return rb;
+}
+
+LendingClubSimulator.prototype.simulate = function(loan, params){
+	//console.log(params);
+	let N = Number(params['numberIterations']);
+	let payoffProb = Number(params['EarlyPayoffRate'])/100.0;
+	let term = Number(loan['term']);
+	let defaultProb = Number(loan['defaultProb']);
+	let intRate = Number(loan['intRate']);
+	let loanAmount = 25;//Number(loan['loanAmount']);
+	let totalPaid = this.totalPaid(intRate, loanAmount, term);
+	let monthlyPayment = totalPaid/term;
+
+	let returns = [];
+	//console.log(payoffProb/term);
+	for (let i = 0; i < N; i ++){
+		let defaulted = false;
+		let paidoffTerm = -1;
+		for (let j = 0; j < term; j++){
+			if (math.random() <= defaultProb/term){
+				returns.push(100.*((monthlyPayment*j)/loanAmount - 1));
+				defaulted = true;
+				break;
+			}
+			if (math.random() <= payoffProb){
+				paidoffTerm = j;
+				break;
+			}
+		}
+		//console.log(defaulted + " - " + paidoffTerm);
+		if (!defaulted && paidoffTerm == -1){
+			returns.push(100.*(totalPaid/loanAmount - 1));
+		} else if (paidoffTerm >= 0){
+			let remainingBalance = this.remainingBalance(intRate, paidoffTerm, monthlyPayment);
+			let paid = (monthlyPayment*paidoffTerm) + remainingBalance;
+			let ret = 100.*(paid/loanAmount - 1);
+			//console.log(paidoffTerm + " " + paid + " " + ret + " " + intRate);
+			returns.push(ret);
+		}
+	}
+	return {
+		'meanReturn': math.mean(returns),
+		'stdReturn': math.std(returns)
+	};
+};
+// NOTE: Calculate the chargoff distribution funciton from dataset.
+
 LendingClubSimulator.prototype.update = function(event, ui){
 	let params = {
 		'defaultRates': getRangedSliderValues(lcSimulator.lcDefaultRateSliderId),
 		'intRates': getRangedSliderValues(lcSimulator.lcIntRateSliderId),
+		'EarlyPayoffRate': getSliderValue(lcSimulator.lcEarlyPayoffRateSlider),
+		'numberIterations': 500,
 	};
 
 	lcSimulator.filterLoans(params);
 	let filtered = lcSimulator.filteredLoansList;
+	
+	lcInvest.update(filtered);
 
-	lcInvest.update(lcSimulator);
+	let simulatedReturns = [];
+	for (let i = 0; i < filtered.length; i++){
+		simulatedReturns.push(lcSimulator.simulate(filtered[i], params));
+	}
+	//console.log(simulatedReturns);
 
 	$(lcSimulator.lcNumLoansDisplayId).html(lcSimulator.currentLoansJson['loans'].length);
 	$(lcSimulator.lcNumLoansFilteredDisplayId).html(filtered.length);
@@ -52,16 +125,56 @@ LendingClubSimulator.prototype.update = function(event, ui){
 		$(lcSimulator.lcAvgDefaultRateDisplayId).html((100*defaultProb[0]).toFixed(2) + ' ± ' + (100*defaultProb[1]).toFixed(2));
 		let intRate = getMeanStd(filtered, 'intRate');
 		$(lcSimulator.lcAvgIntRateDisplayId).html(intRate[0].toFixed(2) + ' ± ' + intRate[1].toFixed(2));
-		let NAR = (intRate[0] - 100*defaultProb[0] - 1.0).toFixed(2);
-		$(lcSimulator.lcAvgNARDisplayId).html(NAR);
+		let meanReturn = getMeanStd(simulatedReturns, 'meanReturn');
+		//let stdReturn = getMeanStd(simulatedReturns, 'stdReturn');
+		$(lcSimulator.lcAvgSimulatedReturnDisplayId).html(meanReturn[0].toFixed(2) + ' ± ' + meanReturn[1].toFixed(2));
 	} else{
 		$(lcSimulator.lcAvgDefaultRateDisplayId).html("N/A");
 		$(lcSimulator.lcAvgIntRateDisplayId).html("N/A");
-		$(lcSimulator.lcAvgNARDisplayId).html("N/A");
+		$(lcSimulator.lcAvgSimulatedReturnDisplayId).html("N/A");
 	}
-
+	//if (!$.isEmptyObject(lcSimulator.filteredLoansList)){
+		lcSimulator.makeTable();
+	//}
 };
 
-// $(function() {
-//
-// });
+LendingClubSimulator.prototype.makeTable = function(){
+	let loans = this.filteredLoansList;
+	//console.log(loans);
+	let data = [];
+	let columns = ['id', 'loanAmount', 'intRate', 'subGrade', 'purpose', 'term', 'defaultProb'];
+	for (let i = 0; i < loans.length; i++) {
+		let row = [];
+		for (let j = 0; j < columns.length; j++){
+			let col = columns[j];
+			let val = loans[i][col];
+			if (col == 'id'){
+				val = "<a target='_blank' href='https://www.lendingclub.com/browse/loanDetail.action?loan_id="+val+"'>"+val+"</a>";
+			}
+			if (col == 'defaultProb'){
+				val = (100*val).toFixed(2)
+			}
+			row.push(val);
+		}
+		data.push(row);
+	}
+	//$(this.lcAsOfDateId).text("Data current as of: " + asOfDate);
+	//console.log($(this.lcCurrentTableId));
+	columns = [
+			{ title: "Loan Id" },
+			{ title: "Loan Amount" },
+			{ title: "Interest Rate (%)" },
+			{ title: "Grade" },
+			{ title: "Purpose" },
+			{ title: "Term" },
+			{ title: "Default Probability (%)" },
+	];
+	if ($.fn.dataTable.isDataTable(this.lcCurrentTableId)){
+		table = $(this.lcCurrentTableId).DataTable();
+		table.destroy();
+	}
+	$(this.lcCurrentTableId).DataTable({
+		"data": data,
+		"columns": columns,
+	});
+};

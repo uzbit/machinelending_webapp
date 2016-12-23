@@ -1,6 +1,6 @@
 
 import unittest
-from webapp.modules.utilities import encrypt_data, decrypt_data
+from modules.utilities import encrypt_data, decrypt_data
 
 class TestUtilities(unittest.TestCase):
 
