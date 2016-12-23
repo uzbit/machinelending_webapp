@@ -1,24 +1,36 @@
-function LendingClubJS() {
-	this.lcTableId = '#lcTable';
+function LendingClubLoans() {
+	this.lcCurrentTableId = '#lcCurrentTable';
 	this.lcAsOfDateId = '#lcAsOfDate';
+	this.currentLoansJson = {};
 }
-LendingClubJS.prototype = new LendingClubJS();
-LendingClubJS.prototype.constructor = LendingClubJS;
+LendingClubLoans.prototype = new LendingClubLoans();
+LendingClubLoans.prototype.constructor = LendingClubLoans;
 
-LendingClubJS.prototype.getCurrentLoans = function(){
-	var this_ = this;
-
-	$.getJSON('lcApi/', {},
-		function(json){
-			this_.makeTable(json);
-		}
-	).fail(function(jqxhr, textStatus, error ) {
-		var err = textStatus + ", " + error;
-	  console.log( "Request Failed: " + err );
-	});
+LendingClubLoans.prototype.getCurrentLoans = function(){
+	var _this = this;
+	if ($.isEmptyObject(this.currentLoansJson)){
+		$.getJSON('lcApi/listedLoans/', {},
+			function(json){
+				_this.currentLoansJson = json;
+				_this.makeTable();
+				_this.setCurrentLoansJson(lcSimulator);
+				lcSimulator.update(null, null);
+			}
+		).fail(function(jqxhr, textStatus, error ) {
+			var err = textStatus + ", " + error;
+		  console.log( "Request Failed: " + err );
+		});
+	} else {
+			_this.makeTable();
+	}
 };
 
-LendingClubJS.prototype.makeTable = function(json){
+LendingClubLoans.prototype.setCurrentLoansJson = function(obj){
+	obj.currentLoansJson = this.currentLoansJson;
+};
+
+LendingClubLoans.prototype.makeTable = function(){
+	let json = this.currentLoansJson;
 	let loans = json['loans'];
 	let asOfDate = json['asOfDate'];
 	let data = [];
@@ -39,7 +51,7 @@ LendingClubJS.prototype.makeTable = function(json){
 		data.push(row);
 	}
 	$(this.lcAsOfDateId).text("Data current as of: " + asOfDate);
-	$(this.lcTableId).DataTable({
+	$(this.lcCurrentTableId).DataTable({
 		 "data": data,
 		 "columns": [
 				 { title: "Loan Id" },
@@ -54,20 +66,6 @@ LendingClubJS.prototype.makeTable = function(json){
 };
 
 $(function() {
-	let lcJS = new LendingClubJS();
-	lcJS.getCurrentLoans();
+	let lcLoans = new LendingClubLoans();
+	lcLoans.getCurrentLoans();
 });
-
-/*
-Important stuff here:
-$(function() {
-	 $('a#calculate').bind('click', function() {
-		 $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
-			 a: $('input[name="a"]').val(),
-			 b: $('input[name="b"]').val()
-		 }, function(data) {
-			 $("#result").text(data.result);
-		 });
-		 return false;
-	 });
- });*/

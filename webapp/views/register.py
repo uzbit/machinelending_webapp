@@ -2,8 +2,8 @@ import flask
 import bcrypt
 from webapp.forms import RegisterForm
 from webapp.forms import flash_errors
-from webapp.modules.utilities import print_log
 from webapp.models import User
+from modules.utilities import print_log
 
 register_blueprint = flask.Blueprint('register', __name__)
 
@@ -19,8 +19,8 @@ def index():
 		)
 		try:
 			new_user.commit()
-			flask.flash("Registration success!", 'success')
-			return flask.redirect(flask.url_for('login.index'))
+			flask.flash("Signup complete.", 'success')
+			return flask.redirect(flask.url_for('settings.lc'))
 		except Exception as e:
 			flask.flash(str(e), 'danger')
 
