@@ -55,7 +55,6 @@ LendingClubInvest.prototype.makeTable = function(){
 	let notesOwned = this.notesOwnedJson['notesOwned'];
 
 	let data = [];
-	let ownedIds = [];
 	let columns = ['numNotes', 'id', 'loanAmount', 'intRate', 'defaultProb'];
 	for (let i = 0; i < loans.length; i++) {
 		let row = [];
@@ -82,7 +81,6 @@ LendingClubInvest.prototype.makeTable = function(){
 		}
 		data.push(row);
 	}
-	ownedIds.push('40350353');
 
 	columns = [
 			{ title: "Notes to Buy" },
@@ -110,6 +108,5 @@ LendingClubInvest.prototype.makeTable = function(){
 };
 
 $(function() {
-	//let lcInvest = new LendingClubInvest();
 	lcInvest.getNotesOwned();
 });
