@@ -59,14 +59,19 @@ LendingClubInvest.prototype.makeTable = function(){
 	for (let i = 0; i < loans.length; i++) {
 		let row = [];
 		let notesForId = "notesFor_"+loans[i]['id'];
+		let numToBuy = 1;
+		if (notesOwned)
+			for (let j = 0; j < notesOwned.length; j++)
+				if (notesOwned[j]['loanId'] == loans[i]['id']){
+					numToBuy = 0;
+					break;
+				}
 
 		// make the row
 		for (let j = 0; j < columns.length; j++){
 			let col = columns[j];
 			let val = loans[i][col];
 			let numToBuy = 1;
-			if (notesOwned[j]['loanId'] == loans[i]['id'])
-				numToBuy = 0;
 
 			if (col == 'numNotes'){
 				val = "<input id='"+notesForId+"' type='text' style='width:50px;' value='"+numToBuy+"'>";
