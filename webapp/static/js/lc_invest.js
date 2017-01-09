@@ -31,6 +31,16 @@ LendingClubInvest.prototype.update = function(loanList){
 	lcInvest.calculateSummary();
 };
 
+
+LendingClubInvest.prototype.createOrder = function(){
+	let order = [];
+	for (let i = 0; i < loans.length; i++) {
+		let notesForId = "notesFor_"+loans[i]['id'];
+		//console.log($("#"+notesForId).val());
+		let numToBuy = Number($("#"+notesForId).val());
+	}
+};
+
 LendingClubInvest.prototype.calculateSummary = function(){
 	let loans = lcInvest.filteredLoansList;
 	let totalLoans = 0;
@@ -38,7 +48,7 @@ LendingClubInvest.prototype.calculateSummary = function(){
 	for (let i = 0; i < loans.length; i++) {
 		let notesForId = "notesFor_"+loans[i]['id'];
 		//console.log($("#"+notesForId).val());
-		let numToBuy  = Number($("#"+notesForId).val());
+		let numToBuy = Number($("#"+notesForId).val());
 		if (numToBuy > 0){
 			totalLoans++;
 		}
