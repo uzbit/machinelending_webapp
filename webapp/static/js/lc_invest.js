@@ -26,6 +26,21 @@ LendingClubInvest.prototype.getNotesOwned = function(){
 	}
 };
 
+LendingClubInvest.prototype.submitOrder = function(order){
+	//console.log(order);
+	if (!$.isEmptyObject(order)){
+		$.post('lcApi/submitOrder/', order,
+			function(json){
+				console.log(json);
+			}
+		).fail(function(jqxhr, textStatus, error ) {
+			var err = textStatus + ", " + error;
+		  console.log( "Request Failed: " + err );
+		});
+	} else {
+	}
+};
+
 LendingClubInvest.prototype.update = function(loanList){
 	lcInvest.filteredLoansList = loanList;
 	lcInvest.makeTable();
@@ -34,7 +49,6 @@ LendingClubInvest.prototype.update = function(loanList){
 
 
 LendingClubInvest.prototype.createOrder = function(){
-	console.log({});
 	let order = {};
 	let loans = lcInvest.filteredLoansList;
 	for (let i = 0; i < loans.length; i++) {
@@ -43,7 +57,9 @@ LendingClubInvest.prototype.createOrder = function(){
 		let numToBuy = Number($("#"+notesForId).val());
 		order[loans[i]['id']] = numToBuy;
 	}
-	console.log(order);
+	lcInvest.submitOrder(order);
+	
+	//console.log(order);
 };
 
 LendingClubInvest.prototype.calculateSummary = function(){

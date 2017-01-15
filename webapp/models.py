@@ -83,11 +83,13 @@ class UsersLCAccountInfo(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
 	enc_api_key = db.Column(db.LargeBinary, unique=True)
 	enc_account_number = db.Column(db.LargeBinary, unique=True)
+	portfolio_name = db.Column(db.String(200))
 
-	def __init__(self, user, enc_api_key, enc_account_number):
+	def __init__(self, user, enc_api_key, enc_account_number, portfolio_name):
 		self.user_id = user.id
 		self.enc_api_key = enc_api_key
 		self.enc_account_number = enc_account_number
+		self.portfolio_name = portfolio_name
 
 	def commit(self):
 		db.session.add(self)
@@ -138,7 +140,9 @@ class UsersLCAccountInfo(db.Model):
 
 		flask.session['api_key'] = api_key
 		flask.session['account_number'] = account_number
-
+		if account_info:
+			flask.session['portfolio_name'] = account_info.portfolio_name
+		
 		return account_info, api_key, account_number
 
 	@staticmethod
@@ -146,6 +150,7 @@ class UsersLCAccountInfo(db.Model):
 		if account_info:
 			flask.session['api_key'] = api_key
 			flask.session['account_number'] = account_number
+			flask.session['portfolio_name'] = account_info.portfolio_name
 
 			account_info.enc_api_key = encrypt_data(
 				api_key, user.enc_password

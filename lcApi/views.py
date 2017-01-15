@@ -6,7 +6,7 @@ from flask_login import login_required
 from flask.views import MethodView
 from lcApi import app
 from modules.LendingClubApi import LendingClubApi
-from modules.utilities import print_log
+from modules.utilities import print_log, get_order
 
 #----------------------------------------------------------------------------#
 # Views.
@@ -30,7 +30,7 @@ app.add_url_rule('/listedLoans/', view_func=ListedLoansView.as_view('/listedLoan
 class NotesOwnedView(MethodView):
 	def get(self):
 		if 'api_key' in flask.session \
-	 	and 'account_number' in flask.session:
+		and 'account_number' in flask.session:
 			try:
 				api_key = flask.session['api_key']
 				account_number = flask.session['account_number']
@@ -52,23 +52,40 @@ app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'
 
 class SubmitOrderView(MethodView):
 	def get(self):
+		print_log(flask.session)
+		print_log("GET")
 		return flask.jsonify({})
 
 	def post(self):
+		print_log(flask.session)
+		print_log("POST")
 		if 'api_key' in flask.session \
-	 	and 'account_number' in flask.session:
+		and 'account_number' in flask.session:
 			try:
 				api_key = flask.session['api_key']
 				account_number = flask.session['account_number']
+				portfolio_name = flask.session['portfolio_name']
+				
 				lcApi = LendingClubApi(
 					api_key,
-					accountId=account_number,
+					accountId=int(account_number),
 					test=False
 				)
-				data = lcApi.getNotesOwned()
-				return flask.jsonify({"notesOwned": data})
+				portfolioId = lcApi.getPortfolioId(portfolio_name)
+				order = self.__getOrder(portfolioId)
+				result = lcApi.placeOrders(order)
+				return flask.jsonify(result)
 			except Exception as e:
 				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
+
+	def __getOrder(self, portfolioId):
+		data = flask.request.form
+		order = list()
+		for key in data:
+			loanId = int(key)
+			amount = 25*float(data[key])
+			order.append(get_order(loanId, amount, portfolioId))
+		return order
 
 app.add_url_rule('/submitOrder/', view_func=SubmitOrderView.as_view('/submitOrder/'))

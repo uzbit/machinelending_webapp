@@ -12,3 +12,12 @@ def encrypt_data(data, salt):
 
 def decrypt_data(data, salt):
 	return decrypt(salt, bytes(data)).decode('utf-8')
+
+def get_order(loanId, amount, portfolioId):
+	if portfolioId > 0:
+		return {
+			"loanId": loanId,
+			"requestedAmount": amount,
+			"portfolioId": portfolioId
+		}
+	return {}
