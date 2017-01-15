@@ -18,8 +18,8 @@
 
 </div>
 
-<input type="submit" value="Purchase" class="btn btn-primary"
-{% if not current_user.is_authenticated %}
-	disabled
-{% endif %}
+<input id="lcPurchaseButton" type="submit" value="Purchase" class="btn btn-primary"
+	{% if not current_user.is_authenticated %}
+		disabled
+	{% endif %}
 >

@@ -3,6 +3,7 @@ function LendingClubInvest() {
 	this.lcTotalLoansDisplay = '#lcTotalLoansDisplay';
 	this.lcTotalNotesDisplay = '#lcTotalNotesDisplay';
 	this.lcCostDisplay = '#lcCostDisplay';
+	this.lcPurchaseButton = '#lcPurchaseButton';
 	this.notesOwnedJson = {};
 	this.filteredLoansList = [];
 }
@@ -33,12 +34,16 @@ LendingClubInvest.prototype.update = function(loanList){
 
 
 LendingClubInvest.prototype.createOrder = function(){
-	let order = [];
+	console.log({});
+	let order = {};
+	let loans = lcInvest.filteredLoansList;
 	for (let i = 0; i < loans.length; i++) {
 		let notesForId = "notesFor_"+loans[i]['id'];
 		//console.log($("#"+notesForId).val());
 		let numToBuy = Number($("#"+notesForId).val());
+		order[loans[i]['id']] = numToBuy;
 	}
+	console.log(order);
 };
 
 LendingClubInvest.prototype.calculateSummary = function(){
@@ -122,6 +127,11 @@ LendingClubInvest.prototype.makeTable = function(){
 	}
 };
 
+LendingClubInvest.prototype.addPurchaseButtonListener = function(){
+	$(this.lcPurchaseButton).bind("click", this.createOrder);
+};
+
 $(function() {
 	lcInvest.getNotesOwned();
+	lcInvest.addPurchaseButtonListener();
 });

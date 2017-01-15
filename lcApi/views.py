@@ -49,3 +49,26 @@ class NotesOwnedView(MethodView):
 		return flask.jsonify({})
 
 app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'))
+
+class SubmitOrderView(MethodView):
+	def get(self):
+		return flask.jsonify({})
+
+	def post(self):
+		if 'api_key' in flask.session \
+	 	and 'account_number' in flask.session:
+			try:
+				api_key = flask.session['api_key']
+				account_number = flask.session['account_number']
+				lcApi = LendingClubApi(
+					api_key,
+					accountId=account_number,
+					test=False
+				)
+				data = lcApi.getNotesOwned()
+				return flask.jsonify({"notesOwned": data})
+			except Exception as e:
+				return flask.jsonify({'error': str(e)})
+		return flask.jsonify({})
+
+app.add_url_rule('/submitOrder/', view_func=SubmitOrderView.as_view('/submitOrder/'))
