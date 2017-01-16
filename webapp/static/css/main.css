@@ -35,3 +35,6 @@ a {
 
 
 /* Various other styles end */
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}

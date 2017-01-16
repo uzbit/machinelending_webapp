@@ -8,7 +8,7 @@ class LendingClubApi(object):
 			test=True,
 		):
 		self.__apiKey = apiKey
-		self.__accountId = accountId
+		self.__accountId = str(accountId)
 		self.__apiUrlBase = 'https://api.lendingclub.com/api/investor/%s/' % LendingClubApi.API_VERSION
 		self.__test = test
 
@@ -52,11 +52,11 @@ class LendingClubApi(object):
 		return self.makeRequest(postfix)['myNotes']
 
 	def getAvailableCash(self):
-		postfix = 'accounts/%d/availablecash' % self.__accountId
+		postfix = 'accounts/%s/availablecash' % self.__accountId
 		return self.makeRequest(postfix)['availableCash']
 
 	def getPortfolios(self):
-		postfix = 'accounts/%d/portfolios' % self.__accountId
+		postfix = 'accounts/%s/portfolios' % self.__accountId
 		return self.makeRequest(postfix)['myPortfolios']
 
 	def getPortfolioId(self, portfolioName):
@@ -68,7 +68,7 @@ class LendingClubApi(object):
 		return portfolioId
 
 	def getNotes(self):
-		postfix = 'accounts/%d/notes' % self.__accountId
+		postfix = 'accounts/%s/notes' % self.__accountId
 		return self.makeRequest(postfix)['myNotes']
 
 	def placeOrders(self, orders):
@@ -76,7 +76,7 @@ class LendingClubApi(object):
 			'aid': self.__accountId,
 			'orders': orders
 		}
-		postfix = 'accounts/%d/orders' % self.__accountId
+		postfix = 'accounts/%s/orders' % self.__accountId
 		if not self.__test:
 			return self.makeRequest(postfix, params=params)
 		else:
@@ -85,7 +85,7 @@ class LendingClubApi(object):
 	def sellNotes(self, order):
 		params = order
 		params['aid'] = str(self.__accountId)
-		postfix = 'accounts/%d/trades/sell' % self.__accountId
+		postfix = 'accounts/%s/trades/sell' % self.__accountId
 		if not self.__test:
 			return self.makeRequest(postfix, params=params)
 		else:

@@ -53,13 +53,14 @@ def lc():
 	if flask.request.method == 'GET':
 		form.api_key.data = api_key
 		form.account_number.data = account_number
-		form.portfolio_name.data = account_info.portfolio_name
+		if account_info:
+			form.portfolio_name.data = account_info.portfolio_name
 	else:
 		if form.validate_on_submit():
 			api_key = form.api_key.data
 			account_number = form.account_number.data
 			portfolio_name = form.portfolio_name.data
-			
+
 			if not account_info:
 				account_info = UsersLCAccountInfo(
 					current_user,
@@ -68,7 +69,7 @@ def lc():
 					portfolio_name
 				)
 			account_info.portfolio_name = portfolio_name
-			
+
 			UsersLCAccountInfo.update_lc_account_info(current_user, account_info, api_key, account_number)
 
 	flash_errors(form)

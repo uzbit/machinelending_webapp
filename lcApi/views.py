@@ -50,30 +50,56 @@ class NotesOwnedView(MethodView):
 
 app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'))
 
-class SubmitOrderView(MethodView):
+class AvailableCashView(MethodView):
 	def get(self):
-		print_log(flask.session)
-		print_log("GET")
+		if 'api_key' in flask.session \
+		and 'account_number' in flask.session:
+			try:
+				api_key = flask.session['api_key']
+				account_number = flask.session['account_number']
+				lcApi = LendingClubApi(
+					api_key,
+					accountId=account_number,
+					test=False
+				)
+				data = lcApi.getAvailableCash()
+				#print_log(data)
+				return flask.jsonify({'availableCash': data})
+			except Exception as e:
+				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
 
 	def post(self):
-		print_log(flask.session)
-		print_log("POST")
+		return flask.jsonify({})
+
+app.add_url_rule('/availableCash/', view_func=AvailableCashView.as_view('/availableCash/'))
+
+
+class SubmitOrderView(MethodView):
+	def get(self):
+		#print_log(flask.session)
+		#print_log("GET")
+		return flask.jsonify({})
+
+	def post(self):
+		#print_log(flask.session)
+		#print_log("POST")
 		if 'api_key' in flask.session \
 		and 'account_number' in flask.session:
 			try:
 				api_key = flask.session['api_key']
 				account_number = flask.session['account_number']
 				portfolio_name = flask.session['portfolio_name']
-				
+
 				lcApi = LendingClubApi(
 					api_key,
 					accountId=int(account_number),
-					test=False
+					test=True
 				)
 				portfolioId = lcApi.getPortfolioId(portfolio_name)
 				order = self.__getOrder(portfolioId)
 				result = lcApi.placeOrders(order)
+				#print_log(result)
 				return flask.jsonify(result)
 			except Exception as e:
 				return flask.jsonify({'error': str(e)})
