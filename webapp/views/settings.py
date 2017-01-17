@@ -22,18 +22,19 @@ def ml():
 	if form.validate_on_submit():
 		current_user.email = form.email.data
 		password = form.password.data.encode('utf-8')
-		# Note, need to invalidate the lc settings...
 		if password:
-			account_info, api_key, account_number = UsersLCAccountInfo.get_lc_account_info(current_user)
+			account_info, api_key, account_number = \
+				UsersLCAccountInfo.get_lc_account_info(current_user)
 			current_user.enc_password = bcrypt.hashpw(
 				password, bcrypt.gensalt()
 			)
-
-		try:
-			UsersLCAccountInfo.update_lc_account_info(current_user, account_info, api_key, account_number)
-			flask.flash("Saved LC account info.", 'success')
-		except Exception as e:
-			flask.flash(str(e), 'danger')
+			# Need to update the lc settings...
+			try:
+				UsersLCAccountInfo.update_lc_account_info(
+					current_user, account_info, api_key, account_number
+				)
+			except Exception as e:
+				flask.flash(str(e), 'danger')
 
 		try:
 			current_user.commit()
@@ -49,28 +50,22 @@ def ml():
 @login_required
 def lc():
 	form = LCAccountInfoForm(flask.request.form)
-	account_info, api_key, account_number = UsersLCAccountInfo.get_lc_account_info(current_user)
+	account_info, api_key, account_number = \
+		UsersLCAccountInfo.get_lc_account_info(current_user)
+
 	if flask.request.method == 'GET':
 		form.api_key.data = api_key
 		form.account_number.data = account_number
-		if account_info:
-			form.portfolio_name.data = account_info.portfolio_name
+		form.portfolio_name.data = account_info.portfolio_name
 	else:
 		if form.validate_on_submit():
 			api_key = form.api_key.data
 			account_number = form.account_number.data
-			portfolio_name = form.portfolio_name.data
+			account_info.portfolio_name = form.portfolio_name.data
 
-			if not account_info:
-				account_info = UsersLCAccountInfo(
-					current_user,
-					bytes(),
-					bytes(),
-					portfolio_name
-				)
-			account_info.portfolio_name = portfolio_name
-
-			UsersLCAccountInfo.update_lc_account_info(current_user, account_info, api_key, account_number)
+			UsersLCAccountInfo.update_lc_account_info(
+				current_user, account_info, api_key, account_number
+			)
 
 	flash_errors(form)
 	return flask.render_template('pages/lc_account.html', form=form)

@@ -32,8 +32,8 @@ class NotesOwnedView(MethodView):
 		if 'api_key' in flask.session \
 		and 'account_number' in flask.session:
 			try:
-				api_key = flask.session['api_key']
-				account_number = flask.session['account_number']
+				api_key = flask.session['lc_api_key']
+				account_number = flask.session['lc_account_number']
 				lcApi = LendingClubApi(
 					api_key,
 					accountId=account_number,
@@ -55,8 +55,8 @@ class AvailableCashView(MethodView):
 		if 'api_key' in flask.session \
 		and 'account_number' in flask.session:
 			try:
-				api_key = flask.session['api_key']
-				account_number = flask.session['account_number']
+				api_key = flask.session['lc_api_key']
+				account_number = flask.session['lc_account_number']
 				lcApi = LendingClubApi(
 					api_key,
 					accountId=account_number,
@@ -87,9 +87,9 @@ class SubmitOrderView(MethodView):
 		if 'api_key' in flask.session \
 		and 'account_number' in flask.session:
 			try:
-				api_key = flask.session['api_key']
-				account_number = flask.session['account_number']
-				portfolio_name = flask.session['portfolio_name']
+				api_key = flask.session['lc_api_key']
+				account_number = flask.session['lc_account_number']
+				portfolio_name = flask.session['lc_portfolio_name']
 
 				lcApi = LendingClubApi(
 					api_key,
