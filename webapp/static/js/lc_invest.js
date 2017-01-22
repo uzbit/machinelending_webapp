@@ -8,6 +8,7 @@ function LendingClubInvest() {
 	this.lcConfirmDialog = '#lcConfirmDialog';
 	this.notesOwnedJson = {};
 	this.availableCashJson = {};
+	this.orderConfirmationsJson = {};
 	this.filteredLoansList = [];
 }
 LendingClubInvest.prototype = new LendingClubInvest();
@@ -46,9 +47,11 @@ LendingClubInvest.prototype.getAvailableCash = function(){
 };
 
 LendingClubInvest.prototype.submitOrder = function(order){
+	var _this = this;
 	if (!$.isEmptyObject(order)){
 		$.post('lcApi/submitOrder/', order,
 			function(json){
+				_this.orderConfirmationsJson = json;
 				console.log(json);
 			}
 		).fail(function(jqxhr, textStatus, error ) {
