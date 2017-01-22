@@ -3,12 +3,42 @@
 {% block content %}
 
 <script type="text/javascript" src="/static/js/lc.js" defer></script>
+<script type="text/javascript" src="/static/js/utilities.js"></script>
+<script type="text/javascript" src="/static/js/lc_simulate.js"></script>
+<script type="text/javascript" src="/static/js/lc_invest.js"></script>
 
-<div class="page-header">
+<!-- <div class="page-header">
   <h2>Lending Club Loans</h2>
-</div>
+</div> -->
 
-<table id="lcTable" class="display" width="100%"></table>
-<div id="lcAsOfDate">Loading...</div>
+<ul class="nav nav-tabs" style="margin-top:30px;">
+	<li {% if request.endpoint == 'lc.index' %} class="active" {% endif %}>
+		<a href="#lc_current" data-toggle="tab">Current Loans</a>
+	</li>
+	<li {% if request.endpoint == 'lc#lc_simulate' %} class="active" {% endif %}>
+		<a href="#lc_simulate" data-toggle="tab">Simluate</a>
+	</li>
+	<li {% if request.endpoint == 'lc#lc_invest' %} class="active" {% endif %}>
+		<a href="#lc_invest" data-toggle="tab">Invest</a>
+	</li>
+</ul>
+
+<div id="tabContent" class="tab-content">
+	<div id="lc_current" class="tab-pane fade active in" >
+		<div style="margin-top:30px;">
+			<table id="lcCurrentTable" class="display" width="100%"></table>
+			<div id="lcAsOfDate">Loading...</div>
+		</div>
+	</div>
+
+	<div id="lc_simulate" class="tab-pane fade" style="margin-bottom: 30px;">
+		{% include "partials/lc_simulate.html" %}
+	</div>
+
+	<div id="lc_invest" class="tab-pane fade" style="margin-bottom: 30px;">
+		{% include "partials/lc_invest.html" %}
+	</div>
+
+</div>
 
 {% endblock %}
