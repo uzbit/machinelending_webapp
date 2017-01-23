@@ -104,7 +104,7 @@ class UsersLCAccountInfo(db.Model):
 		return UsersLCAccountInfo.query.filter_by(user_id=int(user_id)).first()
 
 	@staticmethod
-	def decrypt_info(account_info):
+	def decrypt_info(account_info, user):
 		api_key, account_number = None, None
 		if 'lc_api_key' in flask.session:
 			api_key = flask.session['lc_api_key']
@@ -144,11 +144,13 @@ class UsersLCAccountInfo(db.Model):
 			newpid = os.fork()
 			if newpid == 0:
 				api_key, account_number = UsersLCAccountInfo.decrypt_info(
-					account_info
+					account_info,
+					user
 				)
 		else:
 			api_key, account_number = UsersLCAccountInfo.decrypt_info(
-				account_info
+				account_info,
+				user
 			)
 
 		flask.session['lc_api_key'] = api_key
