@@ -22,6 +22,7 @@ RECAPTCHA_PRIVATE_KEY = '6LdixxIUAAAAAI3Q4GHt34KM7TyThAnHfJVeFI5k'
 
 # Connect to the database
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # Application root
 #APPLICATION_ROOT = basedir
