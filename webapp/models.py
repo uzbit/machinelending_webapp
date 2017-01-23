@@ -126,7 +126,7 @@ class UsersLCAccountInfo(db.Model):
 		return api_key, account_number
 
 	@staticmethod
-	def get_lc_account_info(user, async=False):
+	def get_lc_account_info(user):
 		api_key, account_number = None, None
 		account_info = UsersLCAccountInfo.get_by_user_id(
 			user.id
@@ -141,14 +141,6 @@ class UsersLCAccountInfo(db.Model):
 			)
 			return account_info, api_key, account_number
 
-		# if async:
-		# 	newpid = os.fork()
-		# 	if newpid == 0:
-		# 		api_key, account_number = UsersLCAccountInfo.decrypt_info(
-		# 			account_info,
-		# 			user
-		# 		)
-		# else:
 		api_key, account_number = UsersLCAccountInfo.decrypt_info(
 			account_info,
 			user

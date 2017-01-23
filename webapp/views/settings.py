@@ -66,6 +66,7 @@ def lc():
 			UsersLCAccountInfo.update_lc_account_info(
 				current_user, account_info, api_key, account_number
 			)
+			flask.flash("Saved LC account info.", 'success')
 
 	flash_errors(form)
 	return flask.render_template('pages/lc_account.html', form=form)

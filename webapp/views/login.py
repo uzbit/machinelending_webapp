@@ -25,7 +25,7 @@ def index():
 
 		if user and user.check_password(password):
 			login_user(user, remember=True)
-			UsersLCAccountInfo.get_lc_account_info(user, async=True)
+			UsersLCAccountInfo.get_lc_account_info(user)
 			flask.flash("Logged in.", 'success')
 			return flask.redirect(flask.url_for('index.index'))
 		else:
