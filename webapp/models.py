@@ -122,6 +122,7 @@ class UsersLCAccountInfo(db.Model):
 				account_info.enc_account_number,
 				user.enc_password
 			)
+
 		return api_key, account_number
 
 	@staticmethod
@@ -140,18 +141,18 @@ class UsersLCAccountInfo(db.Model):
 			)
 			return account_info, api_key, account_number
 
-		if async:
-			newpid = os.fork()
-			if newpid == 0:
-				api_key, account_number = UsersLCAccountInfo.decrypt_info(
-					account_info,
-					user
-				)
-		else:
-			api_key, account_number = UsersLCAccountInfo.decrypt_info(
-				account_info,
-				user
-			)
+		# if async:
+		# 	newpid = os.fork()
+		# 	if newpid == 0:
+		# 		api_key, account_number = UsersLCAccountInfo.decrypt_info(
+		# 			account_info,
+		# 			user
+		# 		)
+		# else:
+		api_key, account_number = UsersLCAccountInfo.decrypt_info(
+			account_info,
+			user
+		)
 
 		flask.session['lc_api_key'] = api_key
 		flask.session['lc_account_number'] = account_number

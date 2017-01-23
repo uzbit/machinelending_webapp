@@ -2,6 +2,7 @@
 import os
 import cPickle as pickle
 import flask
+import traceback
 from flask_login import login_required
 from flask.views import MethodView
 from lcApi import app
@@ -21,6 +22,7 @@ class ListedLoansView(MethodView):
 			#print_log(flask.session)
 			return flask.jsonify(data)
 		except Exception as e:
+			print_log(traceback.format_exc())
 			return flask.jsonify({'error': str(e)})
 
 	def post(self):
@@ -43,6 +45,7 @@ class NotesOwnedView(MethodView):
 				data = lcApi.getNotesOwned()
 				return flask.jsonify({"notesOwned": data})
 			except Exception as e:
+				print_log(traceback.format_exc())
 				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
 
@@ -67,7 +70,7 @@ class AvailableCashView(MethodView):
 				data = lcApi.getAvailableCash()
 				return flask.jsonify({'availableCash': data})
 			except Exception as e:
-				print_log(e)
+				print_log(traceback.format_exc())
 				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
 
@@ -106,6 +109,7 @@ class SubmitOrderView(MethodView):
 				#print_log(result)
 				return flask.jsonify(result)
 			except Exception as e:
+				print_log(traceback.format_exc())
 				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
 
