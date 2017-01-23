@@ -19,6 +19,7 @@ def index():
 			bcrypt.hashpw(password, bcrypt.gensalt()),
 			form.email.data
 		)
+		print_log(form.recaptcha.data)
 		try:
 			new_user.commit()
 			login_user(new_user, remember=True)

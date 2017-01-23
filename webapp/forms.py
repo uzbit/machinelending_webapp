@@ -1,5 +1,5 @@
 
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import TextField, PasswordField, TextAreaField, HiddenField
 from wtforms.validators import DataRequired, EqualTo, Length, Email
 from flask import flash
@@ -27,6 +27,7 @@ class RegisterForm(FlaskForm):
 		[DataRequired(),
 		EqualTo('password', message='Passwords must match')]
 	)
+	recaptcha = RecaptchaField()
 
 class MLAccountInfoForm(FlaskForm):
 	email = TextField(
@@ -59,4 +60,3 @@ class LCAccountInfoForm(FlaskForm):
 	api_key = TextField('API Key', validators=[Length(min=6, max=100)])
 	account_number = TextField('Lending Club Account Number', validators=[Length(min=6, max=100)])
 	portfolio_name = TextField('Portfolio Name', validators=[Length(min=1, max=200)])
-	
