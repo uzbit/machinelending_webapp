@@ -31,8 +31,8 @@ app.add_url_rule('/listedLoans/', view_func=ListedLoansView.as_view('/listedLoan
 
 class NotesOwnedView(MethodView):
 	def get(self):
-		if 'api_key' in flask.session \
-		and 'account_number' in flask.session:
+		if 'lc_api_key' in flask.session \
+		and 'lc_account_number' in flask.session:
 			try:
 				api_key = flask.session['lc_api_key']
 				account_number = flask.session['lc_account_number']
@@ -54,8 +54,9 @@ app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'
 
 class AvailableCashView(MethodView):
 	def get(self):
-		if 'api_key' in flask.session \
-		and 'account_number' in flask.session:
+		print_log(flask.session)
+		if 'lc_api_key' in flask.session \
+		and 'lc_account_number' in flask.session:
 			try:
 				api_key = flask.session['lc_api_key']
 				account_number = flask.session['lc_account_number']
@@ -65,7 +66,7 @@ class AvailableCashView(MethodView):
 					test=TEST
 				)
 				data = lcApi.getAvailableCash()
-				#print_log(data)
+				print_log(data)
 				return flask.jsonify({'availableCash': data})
 			except Exception as e:
 				return flask.jsonify({'error': str(e)})
@@ -86,8 +87,9 @@ class SubmitOrderView(MethodView):
 	def post(self):
 		#print_log(flask.session)
 		#print_log("POST")
-		if 'api_key' in flask.session \
-		and 'account_number' in flask.session:
+		if 'lc_api_key' in flask.session \
+		and 'lc_account_number' in flask.session \
+		and 'lc_portfolio_name' in flask.session:
 			try:
 				api_key = flask.session['lc_api_key']
 				account_number = flask.session['lc_account_number']
