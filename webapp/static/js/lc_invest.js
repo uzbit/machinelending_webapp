@@ -3,7 +3,12 @@ function LendingClubInvest() {
 	this.lcTotalLoansDisplay = '#lcTotalLoansDisplay';
 	this.lcTotalNotesDisplay = '#lcTotalNotesDisplay';
 	this.lcCostDisplay = '#lcCostDisplay';
+	this.lcAvailableCashDisplay = '#lcAvailableCashDisplay';
+	this.lcPurchaseButton = '#lcPurchaseButton';
+	this.lcConfirmDialog = '#lcConfirmDialog';
 	this.notesOwnedJson = {};
+	this.availableCashJson = {};
+	this.orderConfirmationsJson = {};
 	this.filteredLoansList = [];
 }
 LendingClubInvest.prototype = new LendingClubInvest();
@@ -25,29 +30,83 @@ LendingClubInvest.prototype.getNotesOwned = function(){
 	}
 };
 
+LendingClubInvest.prototype.getAvailableCash = function(){
+	var _this = this;
+	if ($.isEmptyObject(_this.availableCashJson)){
+		$.getJSON('lcApi/availableCash/', {},
+			function(json){
+				_this.availableCashJson = json;
+				console.log(_this.availableCashJson);
+			}
+		).fail(function(jqxhr, textStatus, error ) {
+			var err = textStatus + ", " + error;
+		  console.log( "Request Failed: " + err );
+		});
+	} else {
+	}
+};
+
+LendingClubInvest.prototype.submitOrder = function(order){
+	var _this = this;
+	if (!$.isEmptyObject(order)){
+		$.post('lcApi/submitOrder/', order,
+			function(json){
+				_this.orderConfirmationsJson = json;
+				console.log(json);
+			}
+		).fail(function(jqxhr, textStatus, error ) {
+			var err = textStatus + ", " + error;
+		  console.log( "Request Failed: " + err );
+		});
+	} else {
+	}
+};
+
 LendingClubInvest.prototype.update = function(loanList){
 	lcInvest.filteredLoansList = loanList;
 	lcInvest.makeTable();
 	lcInvest.calculateSummary();
 };
 
+LendingClubInvest.prototype.createOrder = function(){
+	let order = {};
+	let loans = lcInvest.filteredLoansList;
+	let availableCash = lcInvest.availableCashJson['availableCash'];
+	let totalCost = 0;
+
+	for (let i = 0; i < loans.length; i++) {
+		let notesForId = "notesFor_"+loans[i]['id'];
+		let val = $("#"+notesForId).val();
+		if (!isNaN(val)){
+			let numToBuy = Number(val);
+			totalCost += 25*numToBuy;
+			if (totalCost > availableCash){
+				return {};
+			}
+			order[loans[i]['id']] = numToBuy;
+		}
+	}
+	return order;
+};
+
 LendingClubInvest.prototype.calculateSummary = function(){
 	let loans = lcInvest.filteredLoansList;
-	let totalLoans = 0;
+	let totalLoans = loans.length;
 	let totalNotes = 0;
 	for (let i = 0; i < loans.length; i++) {
 		let notesForId = "notesFor_"+loans[i]['id'];
 		//console.log($("#"+notesForId).val());
-		let numToBuy  = Number($("#"+notesForId).val());
-		if (numToBuy > 0){
-			totalLoans++;
+		let val = $("#"+notesForId).val();
+		if (!isNaN(val)){
+			let numToBuy = Number(val);
+			totalNotes += numToBuy;
 		}
-		totalNotes += numToBuy;
 	}
 	$(lcInvest.lcTotalLoansDisplay).html(totalLoans);
 	$(lcInvest.lcTotalNotesDisplay).html(totalNotes);
 	$(lcInvest.lcCostDisplay).html('$ '+(25.0*totalNotes));
-
+	$(lcInvest.lcAvailableCashDisplay).html('$ '+
+		lcInvest.availableCashJson['availableCash']);
 };
 
 LendingClubInvest.prototype.makeTable = function(){
@@ -71,10 +130,12 @@ LendingClubInvest.prototype.makeTable = function(){
 		for (let j = 0; j < columns.length; j++){
 			let col = columns[j];
 			let val = loans[i][col];
-			let numToBuy = 1;
 
 			if (col == 'numNotes'){
-				val = "<input id='"+notesForId+"' type='text' style='width:50px;' value='"+numToBuy+"'>";
+				if (numToBuy > 0)
+					val = "<input id='"+notesForId+"' type='text' style='width:55px;' value='"+numToBuy+"'>";
+				else
+					val = "<input id='"+notesForId+"' type='text' style='width:55px;' value='owned'>";
 			}
 			if (col == 'id'){
 				val = "<a target='_blank' href='https://www.lendingclub.com/browse/loanDetail.action?loan_id="+val+"'>"+val+"</a>";
@@ -112,6 +173,58 @@ LendingClubInvest.prototype.makeTable = function(){
 	}
 };
 
+LendingClubInvest.prototype.openConfirmationDialog = function(){
+	lcInvest.setupConfirmationDialog();
+	$(lcInvest.lcConfirmDialog).dialog("open");
+};
+
+LendingClubInvest.prototype.addPurchaseButtonListener = function(){
+	$(this.lcPurchaseButton).bind("click", this.openConfirmationDialog);
+};
+
+LendingClubInvest.prototype.setupConfirmationDialog = function(){
+	let order = lcInvest.createOrder();
+	let buttons = [];
+	console.log(order.length);
+	if ($.isEmptyObject(order)){
+		$(lcInvest.lcConfirmDialog).html("Insufficient funds or invalid order.");
+		buttons = [
+			{
+				text: "Close",
+				click: function() {
+					$(this).dialog("close");
+				}
+			}
+		];
+	} else {
+		$(lcInvest.lcConfirmDialog).html("Are you sure you wish to purchase these notes?");
+		buttons = [
+			{
+				text: "Yes",
+				click: function() {
+					lcInvest.submitOrder(order);
+					$(this).dialog("close");
+				}
+			},
+			{
+				text: "No",
+				click: function() {
+					$(this).dialog("close");
+				}
+			}
+		];
+	}
+
+	$(lcInvest.lcConfirmDialog).dialog({
+		autoOpen: false,
+		modal: true,
+		dialogClass: "no-close",
+		buttons: buttons,
+	});
+};
+
 $(function() {
 	lcInvest.getNotesOwned();
+	lcInvest.getAvailableCash();
+	lcInvest.addPurchaseButtonListener();
 });
