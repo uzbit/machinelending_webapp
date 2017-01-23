@@ -7,8 +7,7 @@ from flask.views import MethodView
 from lcApi import app
 from modules.LendingClubApi import LendingClubApi
 from modules.utilities import print_log, get_order
-
-TEST = True
+from config import TEST
 
 #----------------------------------------------------------------------------#
 # Views.
@@ -54,7 +53,6 @@ app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'
 
 class AvailableCashView(MethodView):
 	def get(self):
-		print_log(flask.session)
 		if 'lc_api_key' in flask.session \
 		and 'lc_account_number' in flask.session:
 			try:
@@ -66,7 +64,6 @@ class AvailableCashView(MethodView):
 					test=TEST
 				)
 				data = lcApi.getAvailableCash()
-				print_log(data)
 				return flask.jsonify({'availableCash': data})
 			except Exception as e:
 				return flask.jsonify({'error': str(e)})
