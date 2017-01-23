@@ -8,6 +8,8 @@ from lcApi import app
 from modules.LendingClubApi import LendingClubApi
 from modules.utilities import print_log, get_order
 
+TEST = True
+
 #----------------------------------------------------------------------------#
 # Views.
 #----------------------------------------------------------------------------#
@@ -32,12 +34,12 @@ class NotesOwnedView(MethodView):
 		if 'api_key' in flask.session \
 		and 'account_number' in flask.session:
 			try:
-				api_key = flask.session['api_key']
-				account_number = flask.session['account_number']
+				api_key = flask.session['lc_api_key']
+				account_number = flask.session['lc_account_number']
 				lcApi = LendingClubApi(
 					api_key,
 					accountId=account_number,
-					test=False
+					test=TEST
 				)
 				data = lcApi.getNotesOwned()
 				return flask.jsonify({"notesOwned": data})
@@ -55,12 +57,12 @@ class AvailableCashView(MethodView):
 		if 'api_key' in flask.session \
 		and 'account_number' in flask.session:
 			try:
-				api_key = flask.session['api_key']
-				account_number = flask.session['account_number']
+				api_key = flask.session['lc_api_key']
+				account_number = flask.session['lc_account_number']
 				lcApi = LendingClubApi(
 					api_key,
 					accountId=account_number,
-					test=False
+					test=TEST
 				)
 				data = lcApi.getAvailableCash()
 				#print_log(data)
@@ -74,8 +76,8 @@ class AvailableCashView(MethodView):
 
 app.add_url_rule('/availableCash/', view_func=AvailableCashView.as_view('/availableCash/'))
 
-
 class SubmitOrderView(MethodView):
+
 	def get(self):
 		#print_log(flask.session)
 		#print_log("GET")
@@ -87,23 +89,60 @@ class SubmitOrderView(MethodView):
 		if 'api_key' in flask.session \
 		and 'account_number' in flask.session:
 			try:
-				api_key = flask.session['api_key']
-				account_number = flask.session['account_number']
-				portfolio_name = flask.session['portfolio_name']
+				api_key = flask.session['lc_api_key']
+				account_number = flask.session['lc_account_number']
+				portfolio_name = flask.session['lc_portfolio_name']
 
 				lcApi = LendingClubApi(
 					api_key,
 					accountId=int(account_number),
-					test=True
+					test=TEST
 				)
+
 				portfolioId = lcApi.getPortfolioId(portfolio_name)
 				order = self.__getOrder(portfolioId)
 				result = lcApi.placeOrders(order)
+				if TEST:
+					result = self.__getStubResponse()
 				#print_log(result)
 				return flask.jsonify(result)
 			except Exception as e:
 				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
+
+	def __getStubResponse(self):
+		return {
+			"orderInstructId":55555,
+			"orderConfirmations": [
+			{
+				"loanId":22222,
+				"requestedAmount":55.0,
+				"investedAmount":50.0,
+				"executionStatus":
+					[
+					"REQUESTED_AMOUNT_ROUNDED",
+					"ORDER_FULFILLED"
+					]
+			},
+			{
+				"loanId":33333,
+				"requestedAmount":25.0,
+				"investedAmount":25.0,
+				"executionStatus":
+					[
+					"ORDER_FULFILLED"
+					]
+			},
+			{
+				"loanId":44444,
+				"requestedAmount":25.0,
+				"investedAmount":0,
+				"executionStatus":
+					[
+					"NOT_AN_INFUNDING_LOAN"
+					]
+			}]
+		}
 
 	def __getOrder(self, portfolioId):
 		data = flask.request.form

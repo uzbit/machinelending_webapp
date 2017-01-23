@@ -8,6 +8,7 @@ function LendingClubInvest() {
 	this.lcConfirmDialog = '#lcConfirmDialog';
 	this.notesOwnedJson = {};
 	this.availableCashJson = {};
+	this.orderConfirmationsJson = {};
 	this.filteredLoansList = [];
 }
 LendingClubInvest.prototype = new LendingClubInvest();
@@ -46,9 +47,11 @@ LendingClubInvest.prototype.getAvailableCash = function(){
 };
 
 LendingClubInvest.prototype.submitOrder = function(order){
+	var _this = this;
 	if (!$.isEmptyObject(order)){
 		$.post('lcApi/submitOrder/', order,
 			function(json){
+				_this.orderConfirmationsJson = json;
 				console.log(json);
 			}
 		).fail(function(jqxhr, textStatus, error ) {
@@ -76,11 +79,11 @@ LendingClubInvest.prototype.createOrder = function(){
 		let val = $("#"+notesForId).val();
 		if (!isNaN(val)){
 			let numToBuy = Number(val);
-			order[loans[i]['id']] = numToBuy;
 			totalCost += 25*numToBuy;
 			if (totalCost > availableCash){
-				return [];
+				return {};
 			}
+			order[loans[i]['id']] = numToBuy;
 		}
 	}
 	return order;
@@ -130,9 +133,9 @@ LendingClubInvest.prototype.makeTable = function(){
 
 			if (col == 'numNotes'){
 				if (numToBuy > 0)
-					val = "<input id='"+notesForId+"' type='text' style='width:50px;' value='"+numToBuy+"'>";
+					val = "<input id='"+notesForId+"' type='text' style='width:55px;' value='"+numToBuy+"'>";
 				else
-					val = "<input id='"+notesForId+"' type='text' style='width:50px;' value='owned'>";
+					val = "<input id='"+notesForId+"' type='text' style='width:55px;' value='owned'>";
 			}
 			if (col == 'id'){
 				val = "<a target='_blank' href='https://www.lendingclub.com/browse/loanDetail.action?loan_id="+val+"'>"+val+"</a>";
@@ -171,21 +174,19 @@ LendingClubInvest.prototype.makeTable = function(){
 };
 
 LendingClubInvest.prototype.openConfirmationDialog = function(){
-	console.log("open");
 	lcInvest.setupConfirmationDialog();
 	$(lcInvest.lcConfirmDialog).dialog("open");
 };
 
 LendingClubInvest.prototype.addPurchaseButtonListener = function(){
-	console.log("addlistener");
 	$(this.lcPurchaseButton).bind("click", this.openConfirmationDialog);
 };
 
 LendingClubInvest.prototype.setupConfirmationDialog = function(){
 	let order = lcInvest.createOrder();
 	let buttons = [];
-	console.log(order);
-	if (order.length == 0){
+	console.log(order.length);
+	if ($.isEmptyObject(order)){
 		$(lcInvest.lcConfirmDialog).html("Insufficient funds or invalid order.");
 		buttons = [
 			{

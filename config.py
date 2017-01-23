@@ -16,6 +16,9 @@ SENDGRID_API_KEY = 'SG.MFzYwzs4R5qZ_UHsamtZKg.GZlv_jvy99yTQkgn3MxAMfK9wLXw4Smgwe
 
 WTF_CSRF_ENABLED = False
 
+RECAPTCHA_PUBLIC_KEY = '6LdixxIUAAAAAPqw4UOohYAXzoZw_swk7zDXkSg7'
+RECAPTCHA_PRIVATE_KEY = '6LdixxIUAAAAAI3Q4GHt34KM7TyThAnHfJVeFI5k'
+
 # Connect to the database
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
 
