@@ -179,7 +179,7 @@ class UsersLCAccountInfo(db.Model):
 # Create tables.
 #Base.metadata.create_all(bind=engine, checkfirst=True)
 try:
-	db.drop_all()
+	#db.drop_all()
 	db.create_all()
 except OperationalError:
 	pass
