@@ -11,7 +11,6 @@ register_blueprint = flask.Blueprint('register', __name__)
 @register_blueprint.route('/register', methods=['get', 'post'])
 def index():
 	form = RegisterForm(flask.request.form)
-	print_log(flask.request.data)
 	if form.validate_on_submit():
 		password = form.password.data.encode('utf-8')
 		new_user = User(
