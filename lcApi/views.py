@@ -53,6 +53,7 @@ app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'
 
 class AvailableCashView(MethodView):
 	def get(self):
+		print_log(flask.session)
 		if 'lc_api_key' in flask.session \
 		and 'lc_account_number' in flask.session:
 			try:
@@ -66,6 +67,7 @@ class AvailableCashView(MethodView):
 				data = lcApi.getAvailableCash()
 				return flask.jsonify({'availableCash': data})
 			except Exception as e:
+				print_log(e)
 				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
 
@@ -78,12 +80,10 @@ class SubmitOrderView(MethodView):
 
 	def get(self):
 		#print_log(flask.session)
-		#print_log("GET")
 		return flask.jsonify({})
 
 	def post(self):
 		#print_log(flask.session)
-		#print_log("POST")
 		if 'lc_api_key' in flask.session \
 		and 'lc_account_number' in flask.session \
 		and 'lc_portfolio_name' in flask.session:
