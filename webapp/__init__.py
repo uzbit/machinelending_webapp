@@ -14,11 +14,12 @@ from flask_login import LoginManager, current_user, login_required, logout_user
 
 app = flask.Flask(__name__)
 app.config.from_object('config')
-
+app.testing = app.config['TEST']
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login.index'
+login_manager.login_message_category = 'danger'
 
 #@app.before_request
 #def before_request():

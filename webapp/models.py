@@ -1,25 +1,15 @@
 import os
 import bcrypt
 import flask
-from flask_sqlalchemy import SQLAlchemy
-# from sqlalchemy import create_engine
-# from sqlalchemy.orm import scoped_session, sessionmaker, relationship
-# from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.exc import IntegrityError, OperationalError
-
-from config import SQLALCHEMY_DATABASE_URI
 from webapp import app
+from config import SQLALCHEMY_DATABASE_URI
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from sqlalchemy.exc import IntegrityError, OperationalError
 from modules.utilities import print_log, encrypt_data, decrypt_data
 
-# engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
-# db_session = scoped_session(
-# 	sessionmaker(autocommit=True, autoflush=True, bind=engine)
-# )
-# Base = declarative_base()
-# Base.query = db_session.query_property()
-
 db = SQLAlchemy(app)
-#db.engine.raw_connection().connection.text_factory = str
+migrate = Migrate(app, db)
 
 # http://flask-sqlalchemy.pocoo.org/2.1/quickstart/
 class User(db.Model):
@@ -122,10 +112,11 @@ class UsersLCAccountInfo(db.Model):
 				account_info.enc_account_number,
 				user.enc_password
 			)
+
 		return api_key, account_number
 
 	@staticmethod
-	def get_lc_account_info(user, async=False):
+	def get_lc_account_info(user):
 		api_key, account_number = None, None
 		account_info = UsersLCAccountInfo.get_by_user_id(
 			user.id
@@ -140,18 +131,10 @@ class UsersLCAccountInfo(db.Model):
 			)
 			return account_info, api_key, account_number
 
-		if async:
-			newpid = os.fork()
-			if newpid == 0:
-				api_key, account_number = UsersLCAccountInfo.decrypt_info(
-					account_info,
-					user
-				)
-		else:
-			api_key, account_number = UsersLCAccountInfo.decrypt_info(
-				account_info,
-				user
-			)
+		api_key, account_number = UsersLCAccountInfo.decrypt_info(
+			account_info,
+			user
+		)
 
 		flask.session['lc_api_key'] = api_key
 		flask.session['lc_account_number'] = account_number
@@ -179,6 +162,7 @@ class UsersLCAccountInfo(db.Model):
 # Create tables.
 #Base.metadata.create_all(bind=engine, checkfirst=True)
 try:
+	#db.drop_all()
 	db.create_all()
 except OperationalError:
 	pass

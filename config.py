@@ -7,6 +7,7 @@ BASE_DIR = basedir
 
 # Enable debug mode.
 DEBUG = True
+TEST = True
 
 # Secret key for session management. You can generate random strings here:
 # http://clsc.net/tools-old/random-string-generator.php
@@ -21,6 +22,7 @@ RECAPTCHA_PRIVATE_KEY = '6LdixxIUAAAAAI3Q4GHt34KM7TyThAnHfJVeFI5k'
 
 # Connect to the database
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # Application root
 #APPLICATION_ROOT = basedir
