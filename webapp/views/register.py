@@ -20,7 +20,7 @@ def index():
 		)
 		try:
 			new_user.commit()
-			login_user(new_user, remember=True)
+			login_user(new_user, remember=False)
 			flask.flash("Signup complete.", 'success')
 			return flask.redirect(flask.url_for('settings.lc'))
 		except Exception as e:
