@@ -31,6 +31,7 @@ class ListedLoansView(MethodView):
 app.add_url_rule('/listedLoans/', view_func=ListedLoansView.as_view('/listedLoans/'))
 
 class NotesOwnedView(MethodView):
+	@login_required
 	def get(self):
 		if 'lc_api_key' in flask.session \
 		and 'lc_account_number' in flask.session:
@@ -55,6 +56,7 @@ class NotesOwnedView(MethodView):
 app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'))
 
 class AvailableCashView(MethodView):
+	@login_required
 	def get(self):
 		print_log(flask.session)
 		if 'lc_api_key' in flask.session \
@@ -85,6 +87,7 @@ class SubmitOrderView(MethodView):
 		#print_log(flask.session)
 		return flask.jsonify({})
 
+	@login_required
 	def post(self):
 		#print_log(flask.session)
 		if 'lc_api_key' in flask.session \
