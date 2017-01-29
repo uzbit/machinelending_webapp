@@ -4,9 +4,7 @@
 import os
 import logging
 import flask
-
 from flask_login import LoginManager, current_user, login_required, logout_user
-#from forms import *
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -47,6 +45,7 @@ def login_required(test):
 @login_required
 def logout():
 	logout_user()
+	flask.session.clear()
 	flask.flash("Logged out.", 'success')
 	return flask.redirect(flask.url_for('index.index'))
 

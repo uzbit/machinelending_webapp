@@ -3,7 +3,9 @@
 #----------------------------------------------------------------------------#
 
 from flask import Flask, render_template, request
-import logging
+from flask_login import LoginManager
+from webapp.models import User
+from modules.utilities import print_log
 import os
 
 #----------------------------------------------------------------------------#
@@ -13,11 +15,22 @@ import os
 app = Flask(__name__)
 app.config.from_object('config')
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = None
+login_manager.login_message_category = 'danger'
+login_manager.session_protection = 'strong'
+
+@login_manager.user_loader
+def user_loader(user_id):
+	user = User.query.filter_by(id=int(user_id)).first()
+	#print_log("user_loader - lcApi: %s" % str(user))
+	return user
+
 # Error handlers.
 
 @app.errorhandler(500)
 def internal_error(error):
-    #db_session.rollback()
     return render_template('errors/500.html'), 500
 
 
@@ -31,14 +44,3 @@ def not_found_error(error):
 #----------------------------------------------------------------------------#
 
 from lcApi import views
-
-# Default port:
-#if __name__ == '__main__':
-#    app.run()
-
-# Or specify port manually:
-'''
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-'''
