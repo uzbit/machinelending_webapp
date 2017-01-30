@@ -3,12 +3,24 @@ import os
 import cPickle as pickle
 import flask
 import traceback
-from flask_login import login_required
+from config import TEST
 from flask.views import MethodView
-from lcApi import app
+from flask_login import login_required, current_user
+from lcApi import app, login_manager
 from modules.LendingClubApi import LendingClubApi
 from modules.utilities import print_log, get_order
-from config import TEST
+
+
+from functools import wraps
+def user_required(f):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return login_manager.unauthorized()
+            # or, if you're not using Flask-Login
+            # return redirect(url_for('login_page'))
+        return f(*args, **kwargs)
+    return decorator
 
 #----------------------------------------------------------------------------#
 # Views.
@@ -52,11 +64,12 @@ class NotesOwnedView(MethodView):
 	def post(self):
 		return flask.jsonify({})
 
-app.add_url_rule('/notesOwned/', view_func=NotesOwnedView.as_view('/notesOwned/'))
+view = user_required(NotesOwnedView.as_view('/notesOwned/'))
+app.add_url_rule('/notesOwned/', view_func=view)
 
 class AvailableCashView(MethodView):
 	def get(self):
-		print_log(flask.session)
+		#print_log(flask.session)
 		if 'lc_api_key' in flask.session \
 		and 'lc_account_number' in flask.session:
 			try:
@@ -77,7 +90,8 @@ class AvailableCashView(MethodView):
 	def post(self):
 		return flask.jsonify({})
 
-app.add_url_rule('/availableCash/', view_func=AvailableCashView.as_view('/availableCash/'))
+view = user_required(AvailableCashView.as_view('/availableCash/'))
+app.add_url_rule('/availableCash/', view_func=view)
 
 class SubmitOrderView(MethodView):
 
@@ -85,6 +99,7 @@ class SubmitOrderView(MethodView):
 		#print_log(flask.session)
 		return flask.jsonify({})
 
+	@login_required
 	def post(self):
 		#print_log(flask.session)
 		if 'lc_api_key' in flask.session \
