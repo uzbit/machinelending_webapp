@@ -21,7 +21,8 @@ RECAPTCHA_PUBLIC_KEY = '6LdixxIUAAAAAPqw4UOohYAXzoZw_swk7zDXkSg7'
 RECAPTCHA_PRIVATE_KEY = '6LdixxIUAAAAAI3Q4GHt34KM7TyThAnHfJVeFI5k'
 
 # Connect to the database
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+#SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+SQLALCHEMY_DATABASE_URI = 'postgres://qpkczfursjakec:d97c10f3821c1bbb27ca919cd33765abf4fc4cad6c9e9eabecef3891e116e2c3@ec2-54-227-237-223.compute-1.amazonaws.com:5432/d3gtodkddct744'
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # Application root
