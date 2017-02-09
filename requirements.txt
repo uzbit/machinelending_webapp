@@ -7,6 +7,8 @@ Flask-Migrate==2.0.2
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
 Flask-WTF==0.13
+Flask-Assets==0.12
+jsmin==2.2.1
 Jinja2==2.7.2
 MarkupSafe==0.18
 SQLAlchemy==1.1.5
