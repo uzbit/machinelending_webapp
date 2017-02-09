@@ -9,6 +9,3 @@ CsrfProtect(frontend)
 app = DispatcherMiddleware(frontend, {
 	'/lcApi': lcApi
 })
-
-
-#run_simple('localhost', 5000, app, use_reloader=True)
