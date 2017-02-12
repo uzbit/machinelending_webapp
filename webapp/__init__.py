@@ -5,7 +5,7 @@ import os
 import logging
 import flask
 from flask_login import LoginManager, current_user, login_required, logout_user
-
+from flask_assets import Environment, Bundle
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -14,11 +14,19 @@ app = flask.Flask(__name__)
 app.config.from_object('config')
 app.testing = app.config['TEST']
 
+assets = Environment(app)
+js = Bundle(
+	'js/lc.js', 'js/utilities.js',  'js/lc_simulate.js', 'js/lc_invest.js',
+	filters='jsmin', output='gen/packed.js'
+)
+assets.register('js_all', js)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login.index'
 login_manager.login_message_category = 'danger'
 login_manager.session_protection = 'strong'
+
 
 #@app.before_request
 #def before_request():

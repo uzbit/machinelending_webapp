@@ -4,3 +4,5 @@ venv
 *~
 .DS_Store
 .account_info
+webapp/static/.webassets-cache/
+webapp/static/gen/
