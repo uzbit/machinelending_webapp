@@ -16,10 +16,10 @@ def index():
 	if form.validate_on_submit():
 		send_email(form.name.data, form.email.data, form.comments.data)
 
-		return render_template('pages/thankyou.html')
+		return render_template('pages/thankyou_feedback.html')
 
 	flash_errors(form)
-	return render_template('pages/contact.html', form=form)
+	return render_template('pages/general_error.html')
 
 def _get_email(name, email, comments):
 	ret = list()

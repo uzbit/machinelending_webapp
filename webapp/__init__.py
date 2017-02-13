@@ -89,6 +89,7 @@ from .views.register import register_blueprint
 from .views.login import login_blueprint
 from .views.forgot import forgot_blueprint
 from .views.settings import settings_blueprint
+from .views.subscriptions import subscriptions_blueprint
 
 app.register_blueprint(index_blueprint)
 app.register_blueprint(lc_blueprint)
@@ -98,3 +99,4 @@ app.register_blueprint(register_blueprint)
 app.register_blueprint(login_blueprint)
 app.register_blueprint(forgot_blueprint)
 app.register_blueprint(settings_blueprint)
+app.register_blueprint(subscriptions_blueprint)
