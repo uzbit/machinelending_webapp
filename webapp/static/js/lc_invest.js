@@ -36,7 +36,8 @@ LendingClubInvest.prototype.getAvailableCash = function(){
 		$.getJSON('lcApi/availableCash/', {},
 			function(json){
 				_this.availableCashJson = json;
-				console.log(_this.availableCashJson);
+				_this.updateAvailableCash();
+				//console.log(_this.availableCashJson);
 			}
 		).fail(function(jqxhr, textStatus, error ) {
 			var err = textStatus + ", " + error;
@@ -105,8 +106,7 @@ LendingClubInvest.prototype.calculateSummary = function(){
 	$(lcInvest.lcTotalLoansDisplay).html(totalLoans);
 	$(lcInvest.lcTotalNotesDisplay).html(totalNotes);
 	$(lcInvest.lcCostDisplay).html('$ '+(25.0*totalNotes));
-	$(lcInvest.lcAvailableCashDisplay).html('$ '+
-		lcInvest.availableCashJson['availableCash']);
+	lcInvest.updateAvailableCash();
 };
 
 LendingClubInvest.prototype.makeTable = function(){
@@ -173,6 +173,14 @@ LendingClubInvest.prototype.makeTable = function(){
 	}
 };
 
+LendingClubInvest.prototype.updateAvailableCash = function(){
+	let message = "<a href='/settings/lc'>Input LC Account Info</a>"
+	if (lcInvest.availableCashJson['availableCash']){
+		message = '$ '+lcInvest.availableCashJson['availableCash'];
+	}
+	$(lcInvest.lcAvailableCashDisplay).html(message);
+};
+
 LendingClubInvest.prototype.openConfirmationDialog = function(){
 	lcInvest.setupConfirmationDialog();
 	$(lcInvest.lcConfirmDialog).dialog("open");
@@ -185,12 +193,23 @@ LendingClubInvest.prototype.addPurchaseButtonListener = function(){
 LendingClubInvest.prototype.setupConfirmationDialog = function(){
 	let order = lcInvest.createOrder();
 	let buttons = [];
-	console.log(order.length);
+	//console.log(order.length);
 	if ($.isEmptyObject(order)){
 		$(lcInvest.lcConfirmDialog).html("Insufficient funds or invalid order.");
 		buttons = [
 			{
 				text: "Close",
+				click: function() {
+					$(this).dialog("close");
+				}
+			}
+		];
+
+	} else if (!lcInvest.availableCashJson['availableCash']){
+		$(lcInvest.lcConfirmDialog).html("Have you input your <a href='/settings/lc'>LC Account Info</a> in yet?");
+		buttons = [
+			{
+				text: "No",
 				click: function() {
 					$(this).dialog("close");
 				}

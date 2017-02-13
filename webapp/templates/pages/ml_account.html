@@ -10,5 +10,37 @@
       {{ form.confirm(class_ = 'form-control last-input', placeholder = "Repeat New Password") }}
       <input type="submit" value="Update" class="btn btn-primary" >
   </form>
+	<h3>Subscription Information</h3>
+<!--
+	<a class="btn btn-primary snipcart-add-plan"
+			style="float: left;"
+			data-plan-id="year_subscription"
+	    data-plan-name="Year Subscription"
+	    data-plan-interval="Year"
+	    data-plan-amount="50"
+	    data-plan-url="http://0.0.0.0:5000/settings/ml"> Buy 1 year subscription for $50.</a>
+
+	<a class="btn btn-primary snipcart-add-plan"
+			style="float: left;margin-left:10px; "
+			data-plan-id="month_subscription"
+		  data-plan-name="Month Subscription"
+		  data-plan-interval="Month"
+		  data-plan-amount="5"
+			data-plan-url="http://0.0.0.0:5000/settings/ml" > Buy 1 month subscription for $5.</a>
+-->
+Buy $5 per month basic subscription:
+<form method="post" action="/subscriptions" enctype='application/json'>
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="pk_test_FK8eQlJpN56LaiwHcvDBdD1t"
+    data-amount="500"
+    data-name="Monthly Subscription"
+    data-description="Recurring $5/month for investing."
+		data-locale="auto"
+		data-zip-code="true">
+  </script>
+	<input type="hidden" name="plan" value="basic_monthly_subscription"></input>
+</form>
 </div>
+
 {% endblock %}

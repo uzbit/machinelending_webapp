@@ -1,47 +1,47 @@
 import os
 import bcrypt
 import flask
+import stripe
 from webapp import app
-from config import SQLALCHEMY_DATABASE_URI
+from config import SQLALCHEMY_DATABASE_URI, STRIPE_API_KEY
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_login import UserMixin
 from sqlalchemy.exc import IntegrityError, OperationalError
 from modules.utilities import print_log, encrypt_data, decrypt_data
+
+stripe.api_key = STRIPE_API_KEY
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # http://flask-sqlalchemy.pocoo.org/2.1/quickstart/
-class User(db.Model):
+class User(db.Model, UserMixin):
 	__tablename__ = 'Users'
 
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(100), unique=True)
 	email = db.Column(db.String(100), unique=True)
 	enc_password = db.Column(db.String(200)) # plain text password of 100 gives enc of 168
+	stripe_id = db.Column(db.String(100), unique=True)
 
 	def __init__(self, username, enc_password, email):
 		self.username = username
-		self.enc_password = enc_password
 		self.email = email
-		self.authenticated = False
-		self.active = True
-		self.anonymous = False
+		self.enc_password = enc_password
+		self.stripe_id = ""
 
 	def __repr__(self):
 		return '<User %r>' % self.username
 
-	def is_active(self):
-		return self.active
-
-	def is_authenticated(self):
-		return self.authenticated
-
-	def is_anonymous(self):
-		return self.anonymous
-
-	def get_id(self):
-		return self.id
+	def is_subscription_valid(self):
+		foundActiveSubscription = False
+		if self.stripe_id:
+			customer = stripe.Customer.retrieve(self.stripe_id)
+			for subs in customer["subscriptions"]["data"]:
+				if subs["status"] == "active":
+					foundActiveSubscription = True
+		return foundActiveSubscription
 
 	def commit(self):
 		db.session.add(self)
@@ -50,9 +50,9 @@ class User(db.Model):
 		except IntegrityError as e:
 			db.session().rollback()
 			print_log(e)
-			if str(e).find('constraint failed: Users.username') >= 0:
+			if str(e).find('unique constraint "Users_username_key"') >= 0:
 				raise Exception("Username: %s is already in use." % self.username)
-			elif str(e).find('constraint failed: Users.email') >= 0:
+			elif str(e).find('unique constraint "Users_email_key"') >= 0:
 				raise Exception("Email: %s is already in use." % self.email)
 			else:
 				raise Exception("Error in registration.")
