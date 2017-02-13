@@ -24,6 +24,9 @@
 	<li {% if request.endpoint == 'lc#lc_invest' %} class="active" {% endif %}>
 		<a href="#lc_invest" data-toggle="tab">Invest</a>
 	</li>
+	<li {% if request.endpoint == 'lc#lc_confirmation' %} class="active" {% endif %}>
+		<a href="#lc_confirmation" data-toggle="tab">Confirmation</a>
+	</li>
 </ul>
 
 <div id="tabContent" class="tab-content">
@@ -42,6 +45,9 @@
 		{% include "partials/lc_invest.html" %}
 	</div>
 
+	<div id="lc_confirmation" class="tab-pane fade" style="margin-bottom: 30px; margin-top:30px;">
+		{% include "partials/lc_confirmation.html" %}
+	</div>
 </div>
 
 {% endblock %}
