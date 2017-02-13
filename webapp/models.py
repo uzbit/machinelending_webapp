@@ -19,7 +19,7 @@ class User(db.Model):
 	username = db.Column(db.String(100), unique=True)
 	email = db.Column(db.String(100), unique=True)
 	enc_password = db.Column(db.String(200)) # plain text password of 100 gives enc of 168
-	stripeId = db.Column(db.String(100), unique=True)
+	stripe_id = db.Column(db.String(100), unique=True)
 
 	def __init__(self, username, enc_password, email):
 		self.username = username
@@ -28,7 +28,7 @@ class User(db.Model):
 		self.authenticated = False
 		self.active = True
 		self.anonymous = False
-		self.stripeId = ""
+		self.stripe_id = ""
 
 	def __repr__(self):
 		return '<User %r>' % self.username

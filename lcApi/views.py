@@ -3,23 +3,47 @@ import os
 import cPickle as pickle
 import flask
 import traceback
-from config import TEST
+import stripe
+from functools import wraps
+
+from config import TEST, STRIPE_API_KEY
 from flask.views import MethodView
 from flask_login import login_required, current_user
 from lcApi import app, login_manager
 from modules.LendingClubApi import LendingClubApi
 from modules.utilities import print_log, get_order
 
+stripe.api_key = STRIPE_API_KEY
 
-from functools import wraps
 def user_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
         if not current_user.is_authenticated:
             return login_manager.unauthorized()
-            # or, if you're not using Flask-Login
-            # return redirect(url_for('login_page'))
         return f(*args, **kwargs)
+    return decorator
+
+def valid_subscription_required(f):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+		foundActiveSubscription = False
+
+        if not current_user.is_authenticated:
+            return login_manager.unauthorized()
+
+		if current_user.stripe_id:
+			try:
+				customer = stripe.Customer.retrieve(current_user.stripe_id)
+				for subs in customer["subscriptions"]["data"]:
+					if subs["status"] == "active":
+						foundActiveSubscription = True
+			except Exception:
+				return login_manager.unauthorized()
+
+		if not foundActiveSubscription:
+			return login_manager.unauthorized()
+
+		return f(*args, **kwargs)
     return decorator
 
 #----------------------------------------------------------------------------#
@@ -171,4 +195,5 @@ class SubmitOrderView(MethodView):
 			order.append(get_order(loanId, amount, portfolioId))
 		return order
 
-app.add_url_rule('/submitOrder/', view_func=SubmitOrderView.as_view('/submitOrder/'))
+view = valid_subscription_required(SubmitOrderView.as_view('/submitOrder/'))
+app.add_url_rule('/submitOrder/', view_func=view)

@@ -3,11 +3,13 @@ import flask
 import stripe
 import urlparse
 from flask_login import login_required, current_user
+
+from config import STRIPE_API_KEY
 from webapp.models import User
 from webapp.forms import flash_errors
 from modules.utilities import print_log
 
-stripe.api_key = "sk_test_JeccFfaFc74DYwJ5vQYwsQZK"
+stripe.api_key = STRIPE_API_KEY
 
 subscriptions_blueprint = flask.Blueprint('subscriptions', __name__)
 
@@ -18,20 +20,19 @@ def subscriptions():
 		try:
 			json = urlparse.parse_qs(flask.request.get_data())
 			#content = flask.request.get_json(force=True)
-
-			print_log(flask.request.get_data())
+			#print_log(flask.request.get_data())
 			print_log(json)
 			customer = stripe.Customer.create(
-			  email=json['stripeEmail'],
-			  source=json['stripeToken'],
+			  email=json['stripeEmail'][0],
+			  source=json['stripeToken'][0],
 			)
 			print_log(customer)
-			# stripe.Subscription.create(
-  			#	customer=customer.id,
-			#	plan="basic-monthly",
-			# )
-			#current_user.stripeId = customer.id
-			#current_user.commit()
+			stripe.Subscription.create(
+			  customer=customer.id,
+			  plan=json['plan'][0],
+			)
+			current_user.stripeId = customer.id
+			current_user.commit()
 
 			flask.flash("Successfully Subscribed.", 'success')
 			return flask.render_template('pages/thankyou_subscriptions.html')
