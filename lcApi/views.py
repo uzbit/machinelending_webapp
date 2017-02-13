@@ -23,9 +23,6 @@ def user_required(f):
 def valid_subscription_required(f):
 	@wraps(f)
 	def decorator(*args, **kwargs):
-		print_log(current_user.is_authenticated)
-		print_log(current_user.is_subscription_valid())
-
 		if not current_user.is_authenticated:
 			return login_manager.unauthorized()
 

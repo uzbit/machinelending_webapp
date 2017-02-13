@@ -31,7 +31,7 @@ def subscriptions():
 			  customer=customer.id,
 			  plan=json['plan'][0],
 			)
-			current_user.stripeId = customer.id
+			current_user.stripe_id = customer.id
 			current_user.commit()
 
 			flask.flash("Successfully Subscribed.", 'success')

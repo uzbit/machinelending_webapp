@@ -36,15 +36,11 @@ class User(db.Model, UserMixin):
 
 	def is_subscription_valid(self):
 		foundActiveSubscription = False
-		print_log(self.stripe_id)
 		if self.stripe_id:
-			try:
-				customer = stripe.Customer.retrieve(current_user.stripe_id)
-				for subs in customer["subscriptions"]["data"]:
-					if subs["status"] == "active":
-						foundActiveSubscription = True
-			except Exception:
-				return False
+			customer = stripe.Customer.retrieve(self.stripe_id)
+			for subs in customer["subscriptions"]["data"]:
+				if subs["status"] == "active":
+					foundActiveSubscription = True
 		return foundActiveSubscription
 
 	def commit(self):
