@@ -28,6 +28,10 @@
 		  data-plan-amount="5"
 			data-plan-url="http://0.0.0.0:5000/settings/ml" > Buy 1 month subscription for $5.</a>
 -->
+{% if current_user.is_subscription_valid() %}
+Current Subscription - Basic Monthly<br>
+<a href="/subscriptions/cancel" class="btn btn-primary">Cancel Subscription</a>
+{% else %}
 Buy $5 per month basic subscription:
 <form method="post" action="/subscriptions" enctype='application/json'>
   <script
@@ -41,6 +45,7 @@ Buy $5 per month basic subscription:
   </script>
 	<input type="hidden" name="plan" value="basic_monthly_subscription"></input>
 </form>
+{% endif %}
 </div>
 
 {% endblock %}

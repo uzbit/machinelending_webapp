@@ -26,7 +26,7 @@ def subscriptions():
 			  email=json['stripeEmail'][0],
 			  source=json['stripeToken'][0],
 			)
-			print_log(customer)
+			#print_log(customer)
 			stripe.Subscription.create(
 			  customer=customer.id,
 			  plan=json['plan'][0],
@@ -40,4 +40,25 @@ def subscriptions():
 			flask.flash(str(e), 'danger')
 
 	flask.flash("Unable to subscribe!", 'danger')
+	return flask.render_template('pages/general_error.html')
+
+@subscriptions_blueprint.route('/subscriptions/cancel', methods=['get', 'post'])
+@login_required
+def cancel():
+	try:
+		customer = stripe.Customer.retrieve(current_user.stripe_id)
+		for subs in customer["subscriptions"]["data"]:
+			if subs["status"] == "active":
+				subscription = stripe.Subscription.retrieve(subs["id"])
+				subscription.delete()
+
+		current_user.stripe_id = ""
+		current_user.commit()
+
+		flask.flash("Subscription Cancelled.", 'success')
+		return flask.render_template('pages/home.html')
+	except Exception as e:
+		flask.flash(str(e), 'danger')
+
+	flask.flash("Unable to unsubscribe!", 'danger')
 	return flask.render_template('pages/general_error.html')
