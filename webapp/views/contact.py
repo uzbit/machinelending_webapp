@@ -1,25 +1,22 @@
+import flask
 import sys
 import sendgrid
 import datetime
 from sendgrid.helpers.mail import *
 from config import SENDGRID_API_KEY
-from flask import Blueprint, render_template, request, url_for, redirect
 from webapp.forms import ContactForm
 from webapp.forms import flash_errors
 
-contact_blueprint = Blueprint('contact', __name__)
+contact_blueprint = flask.Blueprint('contact', __name__)
 
 @contact_blueprint.route('/contact', methods=['get', 'post'])
 def index():
-	form = ContactForm(request.form)
-
+	form = ContactForm(flask.request.form)
 	if form.validate_on_submit():
 		send_email(form.name.data, form.email.data, form.comments.data)
-
-		return render_template('pages/thankyou_feedback.html')
-
+		return flask.render_template('pages/thankyou_feedback.html')
 	flash_errors(form)
-	return render_template('pages/general_error.html')
+	return flask.render_template('pages/contact.html', form=form)
 
 def _get_email(name, email, comments):
 	ret = list()

@@ -3,7 +3,6 @@ import os
 import cPickle as pickle
 import flask
 import traceback
-import stripe
 from functools import wraps
 
 from config import TEST, STRIPE_API_KEY
@@ -13,38 +12,28 @@ from lcApi import app, login_manager
 from modules.LendingClubApi import LendingClubApi
 from modules.utilities import print_log, get_order
 
-stripe.api_key = STRIPE_API_KEY
-
 def user_required(f):
-    @wraps(f)
-    def decorator(*args, **kwargs):
-        if not current_user.is_authenticated:
-            return login_manager.unauthorized()
-        return f(*args, **kwargs)
-    return decorator
+	@wraps(f)
+	def decorator(*args, **kwargs):
+		if not current_user.is_authenticated:
+			return login_manager.unauthorized()
+		return f(*args, **kwargs)
+	return decorator
 
 def valid_subscription_required(f):
-    @wraps(f)
-    def decorator(*args, **kwargs):
-		foundActiveSubscription = False
+	@wraps(f)
+	def decorator(*args, **kwargs):
+		print_log(current_user.is_authenticated)
+		print_log(current_user.is_subscription_valid())
 
-        if not current_user.is_authenticated:
-            return login_manager.unauthorized()
+		if not current_user.is_authenticated:
+			return login_manager.unauthorized()
 
-		if current_user.stripe_id:
-			try:
-				customer = stripe.Customer.retrieve(current_user.stripe_id)
-				for subs in customer["subscriptions"]["data"]:
-					if subs["status"] == "active":
-						foundActiveSubscription = True
-			except Exception:
-				return login_manager.unauthorized()
-
-		if not foundActiveSubscription:
+		if not current_user.is_subscription_valid():
 			return login_manager.unauthorized()
 
 		return f(*args, **kwargs)
-    return decorator
+	return decorator
 
 #----------------------------------------------------------------------------#
 # Views.
