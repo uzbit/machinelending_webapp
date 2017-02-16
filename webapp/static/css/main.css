@@ -38,3 +38,7 @@ a {
 .no-close .ui-dialog-titlebar-close {
   display: none;
 }
+
+.disableClick{
+    pointer-events: none;
+}

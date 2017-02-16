@@ -1,15 +1,15 @@
 
 function LendingClubSimulator() {
-	this.lcIntRateSliderId = '#lcIntRateSlider';
-	this.lcDefaultRateSliderId = '#lcDefaultRateSlider';
+	this.lcIntRateSlider = '#lcIntRateSlider';
+	this.lcDefaultRateSlider = '#lcDefaultRateSlider';
 	this.lcEarlyPayoffRateSlider = '#lcEarlyPayoffRateSlider';
-	this.lcNumLoansDisplayId = '#lcNumLoansDisplay';
-	this.lcNumLoansFilteredDisplayId = '#lcNumLoansFilteredDisplay';
-	this.lcAvgDefaultRateDisplayId = '#lcAvgDefaultRateDisplay';
-	this.lcAvgIntRateDisplayId = '#lcAvgIntRateDisplay';
-	this.lcAvgSimulatedReturnDisplayId = '#lcAvgSimulatedReturnDisplay';
-	this.lcCurrentTableId = '#lcSimulateTable';
-	this.lcAsOfDateId = '#lcAsOfDate';
+	this.lcNumLoansDisplay = '#lcNumLoansDisplay';
+	this.lcNumLoansFilteredDisplay = '#lcNumLoansFilteredDisplay';
+	this.lcAvgDefaultRateDisplay = '#lcAvgDefaultRateDisplay';
+	this.lcAvgIntRateDisplay = '#lcAvgIntRateDisplay';
+	this.lcAvgSimulatedReturnDisplay = '#lcAvgSimulatedReturnDisplay';
+	this.lcCurrentTable = '#lcSimulateTable';
+	this.lcAsOfDate = '#lcAsOfDate';
 
 	this.currentLoansJson = {};
 	this.filteredLoansList = [];
@@ -100,15 +100,15 @@ LendingClubSimulator.prototype.simulate = function(loan, params){
 
 LendingClubSimulator.prototype.update = function(event, ui){
 	let params = {
-		'defaultRates': getRangedSliderValues(lcSimulator.lcDefaultRateSliderId),
-		'intRates': getRangedSliderValues(lcSimulator.lcIntRateSliderId),
+		'defaultRates': getRangedSliderValues(lcSimulator.lcDefaultRateSlider),
+		'intRates': getRangedSliderValues(lcSimulator.lcIntRateSlider),
 		'EarlyPayoffRate': getSliderValue(lcSimulator.lcEarlyPayoffRateSlider),
 		'numberIterations': 500,
 	};
 
 	lcSimulator.filterLoans(params);
 	let filtered = lcSimulator.filteredLoansList;
-	
+
 	lcInvest.update(filtered);
 
 	let simulatedReturns = [];
@@ -117,21 +117,21 @@ LendingClubSimulator.prototype.update = function(event, ui){
 	}
 	//console.log(simulatedReturns);
 
-	$(lcSimulator.lcNumLoansDisplayId).html(lcSimulator.currentLoansJson['loans'].length);
-	$(lcSimulator.lcNumLoansFilteredDisplayId).html(filtered.length);
+	$(lcSimulator.lcNumLoansDisplay).html(lcSimulator.currentLoansJson['loans'].length);
+	$(lcSimulator.lcNumLoansFilteredDisplay).html(filtered.length);
 
 	if (filtered.length > 0){
 		let defaultProb = getMeanStd(filtered, 'defaultProb');
-		$(lcSimulator.lcAvgDefaultRateDisplayId).html((100*defaultProb[0]).toFixed(2) + ' ± ' + (100*defaultProb[1]).toFixed(2));
+		$(lcSimulator.lcAvgDefaultRateDisplay).html((100*defaultProb[0]).toFixed(2) + ' ± ' + (100*defaultProb[1]).toFixed(2));
 		let intRate = getMeanStd(filtered, 'intRate');
-		$(lcSimulator.lcAvgIntRateDisplayId).html(intRate[0].toFixed(2) + ' ± ' + intRate[1].toFixed(2));
+		$(lcSimulator.lcAvgIntRateDisplay).html(intRate[0].toFixed(2) + ' ± ' + intRate[1].toFixed(2));
 		let meanReturn = getMeanStd(simulatedReturns, 'meanReturn');
 		//let stdReturn = getMeanStd(simulatedReturns, 'stdReturn');
-		$(lcSimulator.lcAvgSimulatedReturnDisplayId).html(meanReturn[0].toFixed(2) + ' ± ' + meanReturn[1].toFixed(2));
+		$(lcSimulator.lcAvgSimulatedReturnDisplay).html(meanReturn[0].toFixed(2) + ' ± ' + meanReturn[1].toFixed(2));
 	} else{
-		$(lcSimulator.lcAvgDefaultRateDisplayId).html("N/A");
-		$(lcSimulator.lcAvgIntRateDisplayId).html("N/A");
-		$(lcSimulator.lcAvgSimulatedReturnDisplayId).html("N/A");
+		$(lcSimulator.lcAvgDefaultRateDisplay).html("N/A");
+		$(lcSimulator.lcAvgIntRateDisplay).html("N/A");
+		$(lcSimulator.lcAvgSimulatedReturnDisplay).html("N/A");
 	}
 	//if (!$.isEmptyObject(lcSimulator.filteredLoansList)){
 		lcSimulator.makeTable();
@@ -158,8 +158,8 @@ LendingClubSimulator.prototype.makeTable = function(){
 		}
 		data.push(row);
 	}
-	//$(this.lcAsOfDateId).text("Data current as of: " + asOfDate);
-	//console.log($(this.lcCurrentTableId));
+	//$(this.lcAsOfDate).text("Data current as of: " + asOfDate);
+	//console.log($(this.lcCurrentTable));
 	columns = [
 			{ title: "Loan Id" },
 			{ title: "Loan Amount" },
@@ -169,11 +169,11 @@ LendingClubSimulator.prototype.makeTable = function(){
 			{ title: "Term" },
 			{ title: "Default Probability (%)" },
 	];
-	if ($.fn.dataTable.isDataTable(this.lcCurrentTableId)){
-		table = $(this.lcCurrentTableId).DataTable();
+	if ($.fn.dataTable.isDataTable(this.lcCurrentTable)){
+		table = $(this.lcCurrentTable).DataTable();
 		table.destroy();
 	}
-	$(this.lcCurrentTableId).DataTable({
+	$(this.lcCurrentTable).DataTable({
 		"data": data,
 		"columns": columns,
 	});
