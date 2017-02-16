@@ -1,15 +1,21 @@
 function LendingClubInvest() {
-	this.lcCurrentTableId = '#lcInvestTable';
+	this.lcCurrentTable = '#lcInvestTable';
 	this.lcTotalLoansDisplay = '#lcTotalLoansDisplay';
 	this.lcTotalNotesDisplay = '#lcTotalNotesDisplay';
 	this.lcCostDisplay = '#lcCostDisplay';
 	this.lcAvailableCashDisplay = '#lcAvailableCashDisplay';
 	this.lcPurchaseButton = '#lcPurchaseButton';
 	this.lcConfirmDialog = '#lcConfirmDialog';
+	this.lcConfirmationTable = '#lcConfirmationTable';
+	this.lcConfirmationSuccessDisplay = '#lcConfirmationSuccessDisplay';
+	this.lcConfirmationErrorDisplay = '#lcConfirmationErrorDisplay';
+	this.lcOrderInstruct = '#lcOrderInstructId';
+
 	this.notesOwnedJson = {};
 	this.availableCashJson = {};
 	this.orderConfirmationsJson = {};
 	this.filteredLoansList = [];
+	this.errorsJson = {};
 }
 LendingClubInvest.prototype = new LendingClubInvest();
 LendingClubInvest.prototype.constructor = LendingClubInvest;
@@ -36,7 +42,8 @@ LendingClubInvest.prototype.getAvailableCash = function(){
 		$.getJSON('lcApi/availableCash/', {},
 			function(json){
 				_this.availableCashJson = json;
-				console.log(_this.availableCashJson);
+				_this.updateAvailableCash();
+				//console.log(_this.availableCashJson);
 			}
 		).fail(function(jqxhr, textStatus, error ) {
 			var err = textStatus + ", " + error;
@@ -48,15 +55,21 @@ LendingClubInvest.prototype.getAvailableCash = function(){
 
 LendingClubInvest.prototype.submitOrder = function(order){
 	var _this = this;
+	_this.orderConfirmationsJson = {};
 	if (!$.isEmptyObject(order)){
 		$.post('lcApi/submitOrder/', order,
 			function(json){
 				_this.orderConfirmationsJson = json;
+				_this.makeConfirmationsTable();
+				_this.showConfirmationsTab(true);
 				console.log(json);
 			}
 		).fail(function(jqxhr, textStatus, error ) {
+			_this.orderConfirmationsJson = {};
+			_this.errorsJson = jqxhr;
 			var err = textStatus + ", " + error;
 		  console.log( "Request Failed: " + err );
+			_this.showConfirmationsTab(false);
 		});
 	} else {
 	}
@@ -66,6 +79,10 @@ LendingClubInvest.prototype.update = function(loanList){
 	lcInvest.filteredLoansList = loanList;
 	lcInvest.makeTable();
 	lcInvest.calculateSummary();
+};
+
+LendingClubInvest.prototype.updateConfirmations = function(loanList){
+
 };
 
 LendingClubInvest.prototype.createOrder = function(){
@@ -105,8 +122,7 @@ LendingClubInvest.prototype.calculateSummary = function(){
 	$(lcInvest.lcTotalLoansDisplay).html(totalLoans);
 	$(lcInvest.lcTotalNotesDisplay).html(totalNotes);
 	$(lcInvest.lcCostDisplay).html('$ '+(25.0*totalNotes));
-	$(lcInvest.lcAvailableCashDisplay).html('$ '+
-		lcInvest.availableCashJson['availableCash']);
+	lcInvest.updateAvailableCash();
 };
 
 LendingClubInvest.prototype.makeTable = function(){
@@ -158,11 +174,11 @@ LendingClubInvest.prototype.makeTable = function(){
 			{ title: "Term" },*/
 			{ title: "Default Probability (%)" },
 	];
-	if ($.fn.dataTable.isDataTable(this.lcCurrentTableId)){
-		let table = $(this.lcCurrentTableId).DataTable();
+	if ($.fn.dataTable.isDataTable(this.lcCurrentTable)){
+		let table = $(this.lcCurrentTable).DataTable();
 		table.destroy();
 	}
-	$(this.lcCurrentTableId).DataTable({
+	$(this.lcCurrentTable).DataTable({
 		data: data,
 		columns: columns,
 		paging: false
@@ -171,6 +187,56 @@ LendingClubInvest.prototype.makeTable = function(){
 		let notesForId = "notesFor_"+loans[i]['id'];
 		$("#"+notesForId).change(this.calculateSummary);
 	}
+};
+
+LendingClubInvest.prototype.updateAvailableCash = function(){
+	let message = "<a href='/settings/lc'>Input LC Account Info</a>"
+	if (lcInvest.availableCashJson['availableCash']){
+		message = '$ '+lcInvest.availableCashJson['availableCash'];
+	}
+	$(lcInvest.lcAvailableCashDisplay).html(message);
+};
+
+LendingClubInvest.prototype.showConfirmationsTab = function(hideErrors){
+	if (hideErrors){
+		$(this.lcConfirmationErrorDisplay).hide();
+		$(this.lcConfirmationSuccessDisplay).show();
+	} else {
+		$(this.lcConfirmationErrorDisplay).show();
+		$(this.lcConfirmationSuccessDisplay).hide();
+	}
+	$('.nav-tabs li:eq(3) a').tab('show')
+};
+
+LendingClubInvest.prototype.makeConfirmationsTable = function(){
+	let json = this.orderConfirmationsJson;
+	let confirmations = json['orderConfirmations'];
+	let orderInstructId = json['orderInstructId'];
+	let data = [];
+	let columns = ['loanId', 'requestedAmount', 'investedAmount', 'executionStatus'];
+	for (let i = 0; i < confirmations.length; i++) {
+		let row = [];
+		for (let j = 0; j < columns.length; j++){
+			let col = columns[j];
+			let val = confirmations[i][col];
+			if (col == 'loanId'){
+				val = "<a target='_blank' href='https://www.lendingclub.com/browse/loanDetail.action?loan_id="+val+"'>"+val+"</a>";
+			}
+			row.push(val);
+		}
+		data.push(row);
+	}
+	$(this.lcConfirmationTable).DataTable({
+		 "data": data,
+		 "columns": [
+				 { title: "Loan Id" },
+				 { title: "Requested Amount" },
+				 { title: "Invested Amount" },
+				 { title: "Execution Status" },
+		 ]
+ 	});
+	$(this.lcOrderInstruct).html("Order #<b>"+orderInstructId+"</b> fulfilled.<p></p>");
+
 };
 
 LendingClubInvest.prototype.openConfirmationDialog = function(){
@@ -185,12 +251,23 @@ LendingClubInvest.prototype.addPurchaseButtonListener = function(){
 LendingClubInvest.prototype.setupConfirmationDialog = function(){
 	let order = lcInvest.createOrder();
 	let buttons = [];
-	console.log(order.length);
+	//console.log(order.length);
 	if ($.isEmptyObject(order)){
 		$(lcInvest.lcConfirmDialog).html("Insufficient funds or invalid order.");
 		buttons = [
 			{
 				text: "Close",
+				click: function() {
+					$(this).dialog("close");
+				}
+			}
+		];
+
+	} else if (!lcInvest.availableCashJson['availableCash']){
+		$(lcInvest.lcConfirmDialog).html("Have you input your <a href='/settings/lc'>LC Account Info</a> in yet?");
+		buttons = [
+			{
+				text: "No",
 				click: function() {
 					$(this).dialog("close");
 				}

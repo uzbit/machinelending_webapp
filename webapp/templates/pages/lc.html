@@ -9,6 +9,7 @@
 <script type="text/javascript" src="/static/js/utilities.js"></script>
 <script type="text/javascript" src="/static/js/lc_simulate.js"></script>
 <script type="text/javascript" src="/static/js/lc_invest.js"></script>
+http://plnkr.co/edit/DdHLjgjK23KF8fJd1gMw?p=preview
 -->
 <!-- <div class="page-header">
   <h2>Lending Club Loans</h2>
@@ -23,6 +24,9 @@
 	</li>
 	<li {% if request.endpoint == 'lc#lc_invest' %} class="active" {% endif %}>
 		<a href="#lc_invest" data-toggle="tab">Invest</a>
+	</li>
+	<li {% if request.endpoint == 'lc#lc_confirmation' %} class="active" {% endif %}>
+		<a href="#lc_confirmation" data-toggle="tab" class="disableClick">Confirmation</a>
 	</li>
 </ul>
 
@@ -42,6 +46,9 @@
 		{% include "partials/lc_invest.html" %}
 	</div>
 
+	<div id="lc_confirmation" class="tab-pane fade" style="margin-bottom: 30px; margin-top:30px;">
+		{% include "partials/lc_confirmation.html" %}
+	</div>
 </div>
 
 {% endblock %}
