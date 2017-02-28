@@ -140,7 +140,7 @@ class SubmitOrderView(MethodView):
 				#print_log(result)
 				return flask.jsonify(result)
 			except Exception as e:
-				print_log(traceback.format_exc())
+				#print_log(traceback.format_exc())
 				return flask.jsonify({'error': str(e)})
 		return flask.jsonify({})
 
