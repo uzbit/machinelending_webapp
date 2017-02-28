@@ -6,3 +6,4 @@ venv
 .account_info
 webapp/static/.webassets-cache/
 webapp/static/gen/
+lcApi/data/recentLoans.pickle
