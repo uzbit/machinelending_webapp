@@ -128,9 +128,15 @@ class SubmitOrderView(MethodView):
 
 				portfolioId = lcApi.getPortfolioId(portfolio_name)
 				order = self.__getOrder(portfolioId)
-				result = lcApi.placeOrders(order)
 				if TEST:
 					result = self.__getStubResponse()
+				else:
+					# print_log(api_key)
+					# print_log(account_number)
+					# print_log(portfolio_name)
+					# print_log(portfolioId)
+					# print_log(order)
+					result = lcApi.placeOrders(order)
 				#print_log(result)
 				return flask.jsonify(result)
 			except Exception as e:

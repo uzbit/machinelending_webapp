@@ -6,8 +6,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = basedir
 
 # Enable debug mode.
-DEBUG = True
-TEST = True
+DEBUG = False
+TEST = False 
 
 # Secret key for session management. You can generate random strings here:
 # http://clsc.net/tools-old/random-string-generator.php
