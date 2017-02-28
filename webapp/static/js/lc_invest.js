@@ -59,6 +59,10 @@ LendingClubInvest.prototype.submitOrder = function(order){
 	if (!$.isEmptyObject(order)){
 		$.post('lcApi/submitOrder/', order,
 			function(json){
+				if ('error' in json){
+					console.log(json['error']);
+					
+				}
 				_this.orderConfirmationsJson = json;
 				_this.makeConfirmationsTable();
 				_this.showConfirmationsTab(true);
