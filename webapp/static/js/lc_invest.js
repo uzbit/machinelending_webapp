@@ -6,6 +6,7 @@ function LendingClubInvest() {
 	this.lcAvailableCashDisplay = '#lcAvailableCashDisplay';
 	this.lcPurchaseButton = '#lcPurchaseButton';
 	this.lcConfirmDialog = '#lcConfirmDialog';
+	this.lcErrorDialog = '#lcErrorDialog';
 	this.lcConfirmationTable = '#lcConfirmationTable';
 	this.lcConfirmationSuccessDisplay = '#lcConfirmationSuccessDisplay';
 	this.lcConfirmationErrorDisplay = '#lcConfirmationErrorDisplay';
@@ -61,12 +62,13 @@ LendingClubInvest.prototype.submitOrder = function(order){
 			function(json){
 				if ('error' in json){
 					console.log(json['error']);
-					
+					_this.openErrorDialog();
+				} else {
+					_this.orderConfirmationsJson = json;
+					_this.makeConfirmationsTable();
+					_this.showConfirmationsTab(true);
+					console.log(json);
 				}
-				_this.orderConfirmationsJson = json;
-				_this.makeConfirmationsTable();
-				_this.showConfirmationsTab(true);
-				console.log(json);
 			}
 		).fail(function(jqxhr, textStatus, error ) {
 			_this.orderConfirmationsJson = {};
@@ -243,6 +245,11 @@ LendingClubInvest.prototype.makeConfirmationsTable = function(){
 
 };
 
+LendingClubInvest.prototype.openErrorDialog = function(){
+	lcInvest.setupErrorDialog();
+	$(lcInvest.lcErrorDialog).dialog("open");
+};
+
 LendingClubInvest.prototype.openConfirmationDialog = function(){
 	lcInvest.setupConfirmationDialog();
 	$(lcInvest.lcConfirmDialog).dialog("open");
@@ -250,6 +257,27 @@ LendingClubInvest.prototype.openConfirmationDialog = function(){
 
 LendingClubInvest.prototype.addPurchaseButtonListener = function(){
 	$(this.lcPurchaseButton).bind("click", this.openConfirmationDialog);
+};
+
+LendingClubInvest.prototype.setupErrorDialog = function(){
+	let buttons = [];
+	$(lcInvest.lcErrorDialog).html("There was an error with the request.");
+
+	buttons = [
+		{
+			text: "Close",
+			click: function() {
+				$(this).dialog("close");
+			}
+		}
+	];
+
+	$(lcInvest.lcErrorDialog).dialog({
+		autoOpen: false,
+		modal: true,
+		dialogClass: "no-close",
+		buttons: buttons,
+	});
 };
 
 LendingClubInvest.prototype.setupConfirmationDialog = function(){
