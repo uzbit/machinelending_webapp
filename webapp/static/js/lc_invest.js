@@ -106,7 +106,8 @@ LendingClubInvest.prototype.createOrder = function(){
 			if (totalCost > availableCash){
 				return {};
 			}
-			order[loans[i]['id']] = numToBuy;
+			if (numToBuy > 0)
+				order[loans[i]['id']] = numToBuy;
 		}
 	}
 	return order;

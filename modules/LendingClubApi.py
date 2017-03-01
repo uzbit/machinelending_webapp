@@ -30,7 +30,7 @@ class LendingClubApi(object):
 		if request.status_code == 200:
 			return request.json()
 		else:
-			raise Exception(request.reason+" code: %d" % request.status_code)
+			raise Exception(request.reason+" code: %d\nJSON: %s" % (request.status_code, str(request.json())))
 
 	def getRecentLoans(self):
 		postfix = 'loans/listing'
