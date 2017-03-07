@@ -1,6 +1,7 @@
 
 function LendingClubSimulator() {
 	this.lcIntRateSlider = '#lcIntRateSlider';
+	this.lcLoanAmountSlider = '#lcLoanAmountSlider';
 	this.lcDefaultRateSlider = '#lcDefaultRateSlider';
 	this.lcEarlyPayoffRateSlider = '#lcEarlyPayoffRateSlider';
 	this.lcNumLoansDisplay = '#lcNumLoansDisplay';
@@ -26,9 +27,14 @@ LendingClubSimulator.prototype.filterLoans = function(params){
 	for (let i = 0; i < loans.length; i++) {
 		let defaultRate = (100*loans[i]['defaultProb']).toFixed(2);
 		let intRate = loans[i]['intRate'].toFixed(2);
+		let loanAmount = loans[i]['loanAmount'].toFixed(2);
+
 		let isInDefaultRateRange =  defaultRate >= params['defaultRates'][0] && defaultRate <= params['defaultRates'][1];
 		let isInIntRateRange = intRate >= params['intRates'][0] && intRate <= params['intRates'][1];
-		let include = isInDefaultRateRange && isInIntRateRange;
+		let isInLoanAmountRange = loanAmount >= params['loanAmount'][0] && loanAmount <= params['loanAmount'][1];
+
+		let include = isInDefaultRateRange &&
+			isInIntRateRange && isInLoanAmountRange;
 		if (include){
 			this.filteredLoansList.push(loans[i]);
 		}
@@ -56,11 +62,11 @@ LendingClubSimulator.prototype.remainingBalance = function(
 LendingClubSimulator.prototype.simulate = function(loan, params){
 	//console.log(params);
 	let N = Number(params['numberIterations']);
-	let payoffProb = Number(params['EarlyPayoffRate'])/100.0;
+	let payoffProb = Number(params['earlyPayoffRate'])/100.0;
 	let term = Number(loan['term']);
 	let defaultProb = Number(loan['defaultProb']);
 	let intRate = Number(loan['intRate']);
-	let loanAmount = 25;//Number(loan['loanAmount']);
+	let loanAmount = 25;
 	let totalPaid = this.totalPaid(intRate, loanAmount, term);
 	let monthlyPayment = totalPaid/term;
 
@@ -102,7 +108,8 @@ LendingClubSimulator.prototype.update = function(event, ui){
 	let params = {
 		'defaultRates': getRangedSliderValues(lcSimulator.lcDefaultRateSlider),
 		'intRates': getRangedSliderValues(lcSimulator.lcIntRateSlider),
-		'EarlyPayoffRate': getSliderValue(lcSimulator.lcEarlyPayoffRateSlider),
+		'loanAmount': getRangedSliderValues(lcSimulator.lcLoanAmountSlider),
+		'earlyPayoffRate': getSliderValue(lcSimulator.lcEarlyPayoffRateSlider),
 		'numberIterations': 500,
 	};
 

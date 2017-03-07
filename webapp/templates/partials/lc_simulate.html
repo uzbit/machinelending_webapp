@@ -5,6 +5,8 @@ $(getRangedSlider('#lcDefaultRateSlider', '#default_rate_display',
 	0.0, 50.0, 0.1, 0.0, 10.0, lcSimulator.update));
 $(getRangedSlider('#lcIntRateSlider', '#int_rate_display',
 	0.0, 40.0, 0.1, 10.0, 32.0, lcSimulator.update));
+$(getRangedSlider('#lcLoanAmountSlider', '#loan_amount_display',
+	0.0, 60000.0, 100, 10000.0, 60000.0, lcSimulator.update));
 $(getSlider('#lcEarlyPayoffRateSlider', '#early_payoff_rate_display',
 	0.0, 100.0, 0.1, 2.5, lcSimulator.update));
 
@@ -24,6 +26,9 @@ $(getSlider('#lcEarlyPayoffRateSlider', '#early_payoff_rate_display',
 
 		<h5>Interest Rate: <div id="int_rate_display" style="display: inline-block;"></div>%</h5>
 		<div id="lcIntRateSlider" style="margin: 5px;"></div>
+
+		<h5>Loan Amount: $<div id="loan_amount_display" style="display: inline-block;"></div></h5>
+		<div id="lcLoanAmountSlider" style="margin: 5px;"></div>
 
 		<h5>Early Payoff Rate: <div id="early_payoff_rate_display" style="display: inline-block;"></div>%</h5>
 		<div id="lcEarlyPayoffRateSlider" style="margin: 5px;"></div>
