@@ -7,7 +7,7 @@ BASE_DIR = basedir
 
 # Enable debug mode.
 DEBUG = False
-TEST = True
+TEST = False 
 
 # Secret key for session management. You can generate random strings here:
 # http://clsc.net/tools-old/random-string-generator.php

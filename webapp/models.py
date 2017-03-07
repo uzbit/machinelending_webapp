@@ -15,6 +15,11 @@ stripe.api_key = STRIPE_API_KEY
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# migration:
+# export FLASK_APP=`pwd`/webapp/__init__.py
+# flask db migrate
+# flask db upgrade
+
 # http://flask-sqlalchemy.pocoo.org/2.1/quickstart/
 class User(db.Model, UserMixin):
 	__tablename__ = 'Users'
@@ -23,7 +28,7 @@ class User(db.Model, UserMixin):
 	username = db.Column(db.String(100), unique=True)
 	email = db.Column(db.String(100), unique=True)
 	enc_password = db.Column(db.String(200)) # plain text password of 100 gives enc of 168
-	stripe_id = db.Column(db.String(100), unique=True)
+	stripe_id = db.Column(db.String(100))
 
 	def __init__(self, username, enc_password, email):
 		self.username = username
