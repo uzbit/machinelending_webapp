@@ -11,13 +11,19 @@ def index():
 
 @lc_blueprint.route('/lc/save_invest_params', methods=['post'])
 def save_invest_params():
-	saveKeys = [x for x in dir(UsersLCInvestParameters) if not x.startswith('_')]
-	saveParams = dict()
-	for key in saveKeys:
-		saveParams[key] = flask.request.form.get(key, 0)
+	save_keys = [x for x in dir(UsersLCInvestParameters) if not x.startswith('_')]
+	save_params = dict()
+	for key in save_keys:
+		save_params[key] = flask.request.form.get(key, 0)
 
-	new_user = UsersLCInvestParameters(
-		current_user,
-		saveParams
-	)
+	invest_params = UsersLCInvestParameters.get_by_user_id(current_user.id)
+	if not invest_params:
+		invest_params = UsersLCInvestParameters(
+			current_user,
+			save_params
+		)
+		invest_params.commit()
+	else:
+		UsersLCInvestParameters.update(current_user, save_params)
+
 	return flask.render_template('pages/lc.html')

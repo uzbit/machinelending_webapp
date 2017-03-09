@@ -148,7 +148,7 @@ class UsersLCAccountInfo(db.Model):
 		return account_info, api_key, account_number
 
 	@staticmethod
-	def update_lc_account_info(
+	def update(
 		user, account_info, api_key, account_number
 	):
 		if account_info:
@@ -177,7 +177,7 @@ class UsersLCInvestParameters(db.Model):
 	max_loan_amount = db.Column(db.Float) # max $
 
 	def __init__(self, user, args):
-		if not type(args) is dict:
+		if not (type(args) is dict):
 			raise Exception("args must be a dictionary!")
 
 		self.user_id = user.id
@@ -188,6 +188,21 @@ class UsersLCInvestParameters(db.Model):
 		self.min_loan_amount = float(get_parameter(args, 'min_loan_amount', 10000))
 		self.max_loan_amount = float(get_parameter(args, 'max_loan_amount', 60000))
 
+	@staticmethod
+	def get_by_user_id(user_id):
+		return UsersLCInvestParameters.query.filter_by(user_id=int(user_id)).first()
+
+	@staticmethod
+	def update(user, args):
+		invest_params = UsersLCInvestParameters.get_by_user_id(user.id)
+		invest_params.min_default_rate = float(get_parameter(args, 'min_default_rate', 0.0))
+		invest_params.max_default_rate = float(get_parameter(args, 'max_default_rate', 0.1))
+		invest_params.min_int_rate = float(get_parameter(args, 'min_int_rate', 10.0))
+		invest_params.max_int_rate = float(get_parameter(args, 'max_int_rate', 32.0))
+		invest_params.min_loan_amount = float(get_parameter(args, 'min_loan_amount', 10000))
+		invest_params.max_loan_amount = float(get_parameter(args, 'max_loan_amount', 60000))
+		invest_params.commit()
+
 	def commit(self):
 		db.session.add(self)
 		try:
@@ -195,6 +210,8 @@ class UsersLCInvestParameters(db.Model):
 		except IntegrityError as e:
 			db.session().rollback()
 			print_log(e)
+
+
 
 # Create tables.
 #Base.metadata.create_all(bind=engine, checkfirst=True)

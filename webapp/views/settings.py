@@ -30,7 +30,7 @@ def ml():
 			)
 			# Need to update the lc settings...
 			try:
-				UsersLCAccountInfo.update_lc_account_info(
+				UsersLCAccountInfo.update(
 					current_user, account_info, api_key, account_number
 				)
 			except Exception as e:
@@ -63,7 +63,7 @@ def lc():
 			account_number = form.account_number.data
 			account_info.portfolio_name = form.portfolio_name.data
 
-			UsersLCAccountInfo.update_lc_account_info(
+			UsersLCAccountInfo.update(
 				current_user, account_info, api_key, account_number
 			)
 			flask.flash("Saved LC account info.", 'success')
