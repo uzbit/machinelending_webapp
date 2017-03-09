@@ -21,3 +21,6 @@ def get_order(loanId, amount, portfolioId):
 			"portfolioId": portfolioId
 		}
 	return {}
+
+def get_parameter(kwargs, arg, default):
+	return kwargs[arg] if arg in kwargs else default

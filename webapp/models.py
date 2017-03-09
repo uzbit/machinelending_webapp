@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import UserMixin
 from sqlalchemy.exc import IntegrityError, OperationalError
-from modules.utilities import print_log, encrypt_data, decrypt_data
+from modules.utilities import print_log, encrypt_data, decrypt_data, get_parameter
 
 stripe.api_key = STRIPE_API_KEY
 
@@ -163,6 +163,38 @@ class UsersLCAccountInfo(db.Model):
 				account_number, user.enc_password
 			)
 			account_info.commit()
+
+class UsersLCInvestParameters(db.Model):
+	__tablename__ = 'UsersLCInvestParameters'
+
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+	min_default_rate = db.Column(db.Float) # min probability
+	max_default_rate = db.Column(db.Float) # max probability
+	min_int_rate = db.Column(db.Float) # min percent
+	max_int_rate = db.Column(db.Float) # max percent
+	min_loan_amount = db.Column(db.Float) # min $
+	max_loan_amount = db.Column(db.Float) # max $
+
+	def __init__(self, user, args):
+		if not type(args) is dict:
+			raise Exception("args must be a dictionary!")
+
+		self.user_id = user.id
+		self.min_default_rate = float(get_parameter(args, 'min_default_rate', 0.0))
+		self.max_default_rate = float(get_parameter(args, 'max_default_rate', 0.1))
+		self.min_int_rate = float(get_parameter(args, 'min_int_rate', 10.0))
+		self.max_int_rate = float(get_parameter(args, 'max_int_rate', 32.0))
+		self.min_loan_amount = float(get_parameter(args, 'min_loan_amount', 10000))
+		self.max_loan_amount = float(get_parameter(args, 'max_loan_amount', 60000))
+
+	def commit(self):
+		db.session.add(self)
+		try:
+			db.session.commit()
+		except IntegrityError as e:
+			db.session().rollback()
+			print_log(e)
 
 # Create tables.
 #Base.metadata.create_all(bind=engine, checkfirst=True)

@@ -49,6 +49,12 @@ $(getSlider('#lcEarlyPayoffRateSlider', '#early_payoff_rate_display',
   </div>
 </div>
 
+<input id="lcSaveInvestParamsButton" type="submit" value="Save Parameters" class="btn btn-primary" style="float: left; clear: left;"
+	{% if not current_user.is_authenticated %}
+		disabled
+	{% endif %}
+>
+
 
 
 <!-- <a href="/lc#lc_invest" class="btn btn-primary" data-toggle="tab" style="float: right; clear: right;">Invest</a> -->

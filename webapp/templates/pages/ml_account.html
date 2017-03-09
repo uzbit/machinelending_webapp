@@ -10,14 +10,14 @@
 Current Subscription - Basic Monthly<br>
 <a href="/subscriptions/cancel" class="btn btn-primary">Cancel Subscription</a>
 {% else %}
-Buy $4.99 per month basic subscription:
+Buy $0.99 per month basic subscription:
 <form method="post" action="/subscriptions" enctype='application/json'>
   <script
     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
     data-key="pk_test_FK8eQlJpN56LaiwHcvDBdD1t"
-    data-amount="499"
+    data-amount="99"
     data-name="Monthly Subscription"
-    data-description="Recurring $5/month for investing."
+    data-description="Recurring $0.99/month for investing."
 		data-locale="auto"
 		data-zip-code="true">
   </script>
