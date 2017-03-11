@@ -14,8 +14,12 @@ def auto_invest_for_user(user, account_info):
 def main():
 	users = User.query.all()
 	for user in users:
+		if not user.stripe_id:
+			continue
+
 		account_info = UsersLCAccountInfo.get_by_user_id(user.id)
-		if account_info.auto_invest:
+
+		if account_info and account_info.auto_invest:
 			auto_invest_for_user(user, account_info)
 
 if __name__=="__main__":

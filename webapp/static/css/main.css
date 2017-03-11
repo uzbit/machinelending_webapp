@@ -40,5 +40,12 @@ a {
 }
 
 .disableClick{
-    pointer-events: none;
+  pointer-events: none;
+}
+
+.remove-all-styles {
+	all: initial;
+	* {
+		all: unset;
+	}
 }

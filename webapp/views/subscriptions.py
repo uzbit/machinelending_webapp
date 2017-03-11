@@ -5,7 +5,7 @@ import urlparse
 from flask_login import login_required, current_user
 
 from config import STRIPE_API_KEY
-from webapp.models import User
+from webapp.models import User, UsersLCAccountInfo
 from webapp.forms import flash_errors
 from modules.utilities import print_log
 
@@ -21,7 +21,7 @@ def subscriptions():
 			json = urlparse.parse_qs(flask.request.get_data())
 			#content = flask.request.get_json(force=True)
 			#print_log(flask.request.get_data())
-			print_log(json)
+			#print_log(json)
 			customer = stripe.Customer.create(
 			  email=json['stripeEmail'][0],
 			  source=json['stripeToken'][0],
@@ -51,6 +51,10 @@ def cancel():
 			if subs["status"] == "active":
 				subscription = stripe.Subscription.retrieve(subs["id"])
 				subscription.delete()
+
+		account_info = UsersLCAccountInfo.get_by_user_id(current_user.id)
+		account_info.auto_invest = False
+		account_info.commit()
 
 		current_user.stripe_id = ""
 		current_user.commit()

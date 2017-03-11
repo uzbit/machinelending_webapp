@@ -61,4 +61,4 @@ class LCAccountInfoForm(FlaskForm):
 	api_key = TextField('API Key', validators=[Length(min=6, max=100)])
 	account_number = TextField('Lending Club Account Number', validators=[Length(min=6, max=100)])
 	portfolio_name = TextField('Portfolio Name', validators=[Length(min=0, max=200)])
-	auto_invest = BooleanField()
+	auto_invest = BooleanField('Auto Invest', description="Auto invest using simulation parameters.")

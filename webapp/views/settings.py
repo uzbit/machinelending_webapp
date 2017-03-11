@@ -57,12 +57,17 @@ def lc():
 		form.api_key.data = api_key
 		form.account_number.data = account_number
 		form.portfolio_name.data = account_info.portfolio_name
+		form.auto_invest.data = account_info.auto_invest
 	else:
 		if form.validate_on_submit():
 			api_key = form.api_key.data
 			account_number = form.account_number.data
 			account_info.portfolio_name = form.portfolio_name.data
-
+			if form.auto_invest.data:
+				account_info.auto_invest = form.auto_invest.data
+			else:
+				account_info.auto_invest = False
+				
 			UsersLCAccountInfo.update(
 				current_user, account_info, api_key, account_number
 			)

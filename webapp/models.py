@@ -189,14 +189,10 @@ class UsersLCInvestParameters(db.Model):
 		UsersLCInvestParameters.save_params(self, args)
 
 	def __repr__(self):
-		return '<User %s>'\
-			'%s: %f\n'\
-			'%s: %f\n'\
-			% (
-				str(self.user_id), str(self.auto_invest),
-				'min_default_rate', self.min_default_rate,
-				'max_default_rate', self.max_default_rate,
-			)
+		strOut = '<User %s>\n' % str(self.user_id)
+		keyList = [x for x in sorted(dir(self)) if x.startswith('m') and x.find('_') > 0]
+		strOut += ''.join(['\t%s: %f\n' % (x, self.__dict__[x]) for x in keyList])
+		return strOut
 
 	@staticmethod
 	def get_by_user_id(user_id):

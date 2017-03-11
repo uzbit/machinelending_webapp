@@ -3,6 +3,7 @@
 {% block content %}
 {{ super() }}
 
+
 <div class="alert alert-dismissible alert-info" style="margin-top: 30px; float: right;clear: right;">
 <button type="button" class="close" data-dismiss="alert">&times;</button>
 This information is encrypted before it's stored.
@@ -14,7 +15,9 @@ This information is encrypted before it's stored.
 	{{ form.account_number(class_ = 'form-control', placeholder = form.account_number.label.text) }}
 	{{ form.portfolio_name(class_ = 'form-control', placeholder = form.portfolio_name.label.text) }}
 	{% if current_user.is_subscription_valid() %}
-	Auto invest using simulated parameters {{ form.email(class_ = 'form-control' }}
+	{{ form.auto_invest.label }}
+	{{ form.auto_invest(class_ = 'form-control', placeholder = form.auto_invest.label.text) }}
+
 	{% endif %}
 
 	<input type="submit" value="Save" class="btn btn-primary">
