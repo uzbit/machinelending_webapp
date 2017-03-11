@@ -12,6 +12,7 @@ function LendingClubSimulator() {
 	this.lcCurrentTable = '#lcSimulateTable';
 	this.lcAsOfDate = '#lcAsOfDate';
 	this.lcSaveInvestParamsButton = '#lcSaveInvestParamsButton';
+	this.lcConfirmSaveDialog = '#lcConfirmSaveDialog';
 
 	this.currentLoansJson = {};
 	this.filteredLoansList = [];
@@ -34,7 +35,7 @@ LendingClubSimulator.prototype.saveInvestParams = function(){
 	var _this = this;
 	$.post('/lc/save_invest_params', backend_params,
 		function(json){
-			
+			lcSimulator.openConfirmSaveDialog();
 		}
 	).fail(function(jqxhr, textStatus, error ) {
 		var err = textStatus + ", " + error;
@@ -216,6 +217,32 @@ LendingClubSimulator.prototype.makeTable = function(){
 
 LendingClubSimulator.prototype.addSaveInvestParamsButtonListener = function(){
 	$(this.lcSaveInvestParamsButton).bind("click", this.saveInvestParams);
+};
+
+LendingClubSimulator.prototype.openConfirmSaveDialog = function(){
+	lcSimulator.setupConfirmSaveDialog();
+	$(lcSimulator.lcConfirmSaveDialog).dialog("open");
+};
+
+LendingClubSimulator.prototype.setupConfirmSaveDialog = function(){
+	let buttons = [];
+	$(lcSimulator.lcConfirmSaveDialog).html("Auto-Invest parameters saved!");
+
+	buttons = [
+		{
+			text: "Close",
+			click: function() {
+				$(this).dialog("close");
+			}
+		}
+	];
+
+	$(lcSimulator.lcConfirmSaveDialog).dialog({
+		autoOpen: false,
+		modal: true,
+		dialogClass: "no-close",
+		buttons: buttons,
+	});
 };
 
 $(function() {

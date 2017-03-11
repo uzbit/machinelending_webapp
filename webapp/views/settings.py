@@ -39,7 +39,7 @@ def ml():
 		try:
 			current_user.commit()
 			flask.flash("Saved ML account info.", 'success')
-			return flask.redirect(flask.url_for('settings.ml'))
+			#return flask.redirect(flask.url_for('settings.ml'))
 		except Exception as e:
 			flask.flash(str(e), 'danger')
 
@@ -67,11 +67,13 @@ def lc():
 				account_info.auto_invest = form.auto_invest.data
 			else:
 				account_info.auto_invest = False
-				
+		try:
 			UsersLCAccountInfo.update(
 				current_user, account_info, api_key, account_number
 			)
 			flask.flash("Saved LC account info.", 'success')
+		except Exception as e:
+			flask.flash(str(e), 'danger')
 
 	flash_errors(form)
 	return flask.render_template('pages/lc_account.html', form=form)
