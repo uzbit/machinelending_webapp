@@ -13,6 +13,10 @@ This information is encrypted before it's stored.
 	{{ form.api_key(class_ = 'form-control', placeholder = form.api_key.label.text, autofocus = true) }}
 	{{ form.account_number(class_ = 'form-control', placeholder = form.account_number.label.text) }}
 	{{ form.portfolio_name(class_ = 'form-control', placeholder = form.portfolio_name.label.text) }}
+	{% if current_user.is_subscription_valid() %}
+	Auto invest using simulated parameters {{ form.email(class_ = 'form-control' }}
+	{% endif %}
+
 	<input type="submit" value="Save" class="btn btn-primary">
 </form>
 

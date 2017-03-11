@@ -26,4 +26,7 @@ def save_invest_params():
 	else:
 		UsersLCInvestParameters.update(current_user, save_params)
 
-	return flask.render_template('pages/lc.html')
+	invest_params = UsersLCInvestParameters.get_by_user_id(current_user.id)
+	flask.flash("Saved Settings.", 'success')
+
+	return flask.render_template('pages/lc.html', error="Saved Settings.")

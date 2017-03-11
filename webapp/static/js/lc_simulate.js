@@ -34,7 +34,7 @@ LendingClubSimulator.prototype.saveInvestParams = function(){
 	var _this = this;
 	$.post('/lc/save_invest_params', backend_params,
 		function(json){
-			console.log(json);
+			
 		}
 	).fail(function(jqxhr, textStatus, error ) {
 		var err = textStatus + ", " + error;

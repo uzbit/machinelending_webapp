@@ -79,12 +79,17 @@ class UsersLCAccountInfo(db.Model):
 	enc_api_key = db.Column(db.LargeBinary, unique=True)
 	enc_account_number = db.Column(db.LargeBinary, unique=True)
 	portfolio_name = db.Column(db.String(200))
+	auto_invest = db.Column(db.Boolean, default=False)
 
 	def __init__(self, user, enc_api_key, enc_account_number, portfolio_name):
 		self.user_id = user.id
 		self.enc_api_key = enc_api_key
 		self.enc_account_number = enc_account_number
 		self.portfolio_name = portfolio_name
+		self.auto_invest = False
+
+	def __repr__(self):
+		return '<User %s, %s>' % (str(self.user_id), str(self.auto_invest))
 
 	def commit(self):
 		db.session.add(self)
@@ -181,12 +186,17 @@ class UsersLCInvestParameters(db.Model):
 			raise Exception("args must be a dictionary!")
 
 		self.user_id = user.id
-		self.min_default_rate = float(get_parameter(args, 'min_default_rate', 0.0))
-		self.max_default_rate = float(get_parameter(args, 'max_default_rate', 0.1))
-		self.min_int_rate = float(get_parameter(args, 'min_int_rate', 10.0))
-		self.max_int_rate = float(get_parameter(args, 'max_int_rate', 32.0))
-		self.min_loan_amount = float(get_parameter(args, 'min_loan_amount', 10000))
-		self.max_loan_amount = float(get_parameter(args, 'max_loan_amount', 60000))
+		UsersLCInvestParameters.save_params(self, args)
+
+	def __repr__(self):
+		return '<User %s>'\
+			'%s: %f\n'\
+			'%s: %f\n'\
+			% (
+				str(self.user_id), str(self.auto_invest),
+				'min_default_rate', self.min_default_rate,
+				'max_default_rate', self.max_default_rate,
+			)
 
 	@staticmethod
 	def get_by_user_id(user_id):
@@ -195,12 +205,7 @@ class UsersLCInvestParameters(db.Model):
 	@staticmethod
 	def update(user, args):
 		invest_params = UsersLCInvestParameters.get_by_user_id(user.id)
-		invest_params.min_default_rate = float(get_parameter(args, 'min_default_rate', 0.0))
-		invest_params.max_default_rate = float(get_parameter(args, 'max_default_rate', 0.1))
-		invest_params.min_int_rate = float(get_parameter(args, 'min_int_rate', 10.0))
-		invest_params.max_int_rate = float(get_parameter(args, 'max_int_rate', 32.0))
-		invest_params.min_loan_amount = float(get_parameter(args, 'min_loan_amount', 10000))
-		invest_params.max_loan_amount = float(get_parameter(args, 'max_loan_amount', 60000))
+		UsersLCInvestParameters.save_params(invest_params, args)
 		invest_params.commit()
 
 	def commit(self):
@@ -211,6 +216,14 @@ class UsersLCInvestParameters(db.Model):
 			db.session().rollback()
 			print_log(e)
 
+	@staticmethod
+	def save_params(ulcipObj, args):
+		ulcipObj.min_default_rate = float(get_parameter(args, 'min_default_rate', 0.0))
+		ulcipObj.max_default_rate = float(get_parameter(args, 'max_default_rate', 0.1))
+		ulcipObj.min_int_rate = float(get_parameter(args, 'min_int_rate', 10.0))
+		ulcipObj.max_int_rate = float(get_parameter(args, 'max_int_rate', 32.0))
+		ulcipObj.min_loan_amount = float(get_parameter(args, 'min_loan_amount', 10000))
+		ulcipObj.max_loan_amount = float(get_parameter(args, 'max_loan_amount', 60000))
 
 
 # Create tables.
