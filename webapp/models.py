@@ -106,12 +106,15 @@ class UsersLCAccountInfo(db.Model):
 	@staticmethod
 	def decrypt_info(account_info, user):
 		api_key, account_number = None, None
-		if 'lc_api_key' in flask.session:
-			api_key = flask.session['lc_api_key']
+		try:
+			if 'lc_api_key' in flask.session:
+				api_key = flask.session['lc_api_key']
 
-		if 'lc_account_number' in flask.session:
-			account_number = flask.session['lc_account_number']
-
+			if 'lc_account_number' in flask.session:
+				account_number = flask.session['lc_account_number']
+		except RuntimeError:
+			pass
+			
 		if not api_key and account_info.enc_api_key:
 			api_key = decrypt_data(
 				account_info.enc_api_key,

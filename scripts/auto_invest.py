@@ -1,15 +1,61 @@
-
-
+import os
+import cPickle as pickle
+from lcApi import app
 from webapp.models import User
 from webapp.models import UsersLCInvestParameters
 from webapp.models import UsersLCAccountInfo
+from modules.LendingClubApi import LendingClubApi
 
+MAX_TERM = 36
+recent_loans = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
+recent_loans = pickle.load(open(recent_loans, 'rb'))
+recent_loans = recent_loans['loans']
 
-def auto_invest_for_user(user, account_info):
-	print user.stripe_id
+def filter_loan(loan, invest_params):
+	if loan['term'] > MAX_TERM: return False
+	if loan['intRate'] < invest_params.min_int_rate: return False
+	if loan['intRate'] > invest_params.max_int_rate: return False
+	if loan['defaultProb'] < invest_params.min_default_rate: return False
+	if loan['defaultProb'] > invest_params.max_default_rate: return False
+	if loan['loanAmount'] < invest_params.min_loan_amount: return False
+	if loan['loanAmount'] > invest_params.max_loan_amount: return False
+	return True
+
+def get_order(loan, amount, portfolio_id):
+	if portfolio_id > 0:
+		return {
+			"loanId": loan['id'],
+			"requestedAmount": amount,
+			"portfolioId": portfolio_id
+		}
+
+	return {
+		"loanId": loan['id'],
+		"requestedAmount": amount,
+	}
+
+def get_orders(account_info, api_key, account_number, invest_params):
+	lcApi = LendingClubApi(api_key, accountId=account_number, test=True)
+	portfolio_id = lcApi.getPortfolioId(account_info.portfolio_name)
+
+	filtered_loans = filter(lambda x: filter_loan(x, invest_params), recent_loans)
+
+	orders = list()
+	for loan in filtered_loans:
+		orders.append(get_order(loan, 25, portfolio_id))
+	print orders
+	#lcApi.placeOrders(orders)
+
+def auto_invest_for_user(user):
+	account_info = UsersLCAccountInfo.get_by_user_id(user.id)
+	if not (account_info and account_info.auto_invest):
+		return
+
+	api_key, account_number = UsersLCAccountInfo.decrypt_info(account_info, user)
+
 	invest_params = UsersLCInvestParameters.get_by_user_id(user.id)
 	if invest_params:
-		print invest_params
+		get_orders(account_info, api_key, account_number, invest_params)
 
 def main():
 	users = User.query.all()
@@ -17,10 +63,7 @@ def main():
 		if not user.stripe_id:
 			continue
 
-		account_info = UsersLCAccountInfo.get_by_user_id(user.id)
-
-		if account_info and account_info.auto_invest:
-			auto_invest_for_user(user, account_info)
+		auto_invest_for_user(user)
 
 if __name__=="__main__":
 	main()
