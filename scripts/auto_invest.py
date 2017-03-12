@@ -35,7 +35,7 @@ def get_order(loan, amount, portfolio_id):
 		"requestedAmount": amount,
 	}
 
-def get_orders(account_info, api_key, account_number, invest_params):
+def place_orders(account_info, api_key, account_number, invest_params):
 	lcApi = LendingClubApi(
 		api_key, accountId=account_number, test=app.config['TEST']
 	)
@@ -46,10 +46,14 @@ def get_orders(account_info, api_key, account_number, invest_params):
 		recent_loans
 	)
 
+	notes_owned = lcApi.getNotesOwned()
+	owned_ids = [x['loanId'] for x in notes_owned]
+	filtered_loans = filter(lambda x: x['id'] not in owned_ids, filtered_loans)
+
 	orders = list()
 	for loan in filtered_loans:
 		orders.append(get_order(loan, 25, portfolio_id))
-	#print orders
+
 	return lcApi.placeOrders(orders)
 
 def format_orderConfirmations(result):
@@ -72,7 +76,7 @@ def format_orderConfirmations(result):
 	if outText:
 		return outText
 	else:
-		return str(result)
+		return "No order(s) placed. Attempted to place the following order(s):\n" + str(result)
 
 def auto_invest_for_user(user):
 	account_info = UsersLCAccountInfo.get_by_user_id(user.id)
@@ -83,7 +87,13 @@ def auto_invest_for_user(user):
 
 	invest_params = UsersLCInvestParameters.get_by_user_id(user.id)
 	if invest_params:
-		result = get_orders(account_info, api_key, account_number, invest_params)
+		result = place_orders(
+			account_info,
+			api_key,
+			account_number,
+			invest_params
+		)
+
 		body = format_orderConfirmations(result)
 		send_email(
 			'no-reply@machinelending.com',
