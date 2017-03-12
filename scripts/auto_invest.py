@@ -8,7 +8,7 @@ from modules.LendingClubApi import LendingClubApi
 from modules.utilities import send_email
 
 MAX_TERM = 36
-recent_loans = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
+recent_loans = 'lcApi/data/recentLoans.pickle'
 recent_loans = pickle.load(open(recent_loans, 'rb'))
 recent_loans = recent_loans['loans']
 
