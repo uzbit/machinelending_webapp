@@ -30,7 +30,7 @@ def ml():
 			)
 			# Need to update the lc settings...
 			try:
-				UsersLCAccountInfo.update_lc_account_info(
+				UsersLCAccountInfo.update(
 					current_user, account_info, api_key, account_number
 				)
 			except Exception as e:
@@ -39,7 +39,7 @@ def ml():
 		try:
 			current_user.commit()
 			flask.flash("Saved ML account info.", 'success')
-			return flask.redirect(flask.url_for('settings.ml'))
+			#return flask.redirect(flask.url_for('settings.ml'))
 		except Exception as e:
 			flask.flash(str(e), 'danger')
 
@@ -57,16 +57,23 @@ def lc():
 		form.api_key.data = api_key
 		form.account_number.data = account_number
 		form.portfolio_name.data = account_info.portfolio_name
+		form.auto_invest.data = account_info.auto_invest
 	else:
 		if form.validate_on_submit():
 			api_key = form.api_key.data
 			account_number = form.account_number.data
 			account_info.portfolio_name = form.portfolio_name.data
-
-			UsersLCAccountInfo.update_lc_account_info(
+			if form.auto_invest.data:
+				account_info.auto_invest = form.auto_invest.data
+			else:
+				account_info.auto_invest = False
+		try:
+			UsersLCAccountInfo.update(
 				current_user, account_info, api_key, account_number
 			)
 			flask.flash("Saved LC account info.", 'success')
+		except Exception as e:
+			flask.flash(str(e), 'danger')
 
 	flash_errors(form)
 	return flask.render_template('pages/lc_account.html', form=form)
