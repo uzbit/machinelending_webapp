@@ -52,6 +52,28 @@ def get_orders(account_info, api_key, account_number, invest_params):
 	#print orders
 	return lcApi.placeOrders(orders)
 
+def format_orderConfirmations(result):
+	outText = ''
+	if 'orderConfirmations' in result:
+		orders = result['orderConfirmations']
+		outText = "<table><tr>"
+		keys = ['loanId', 'requestedAmount', 'investedAmount',  'executionStatus']
+
+		for key in keys:
+			outText += "<th>%s</th>" % key
+		outText += "</tr>"
+		for order in orders:
+			outText += "<tr>"
+			for key in keys:
+				outText += "<td>%s</td>" % str(order[key])
+			outText += "</tr>"
+		outText += "</table>"
+		#[{u'loanId': 99238644, u'executionStatus': [u'NOT_AN_IN_FUNDING_LOAN'], u'investedAmount': 0.0, u'requestedAmount': 25.0}, {u'loanId': 97567829, u'executionStatus': [u'NOT_AN_IN_FUNDING_LOAN'], u'investedAmount': 0.0, u'requestedAmount': 25.0}, {u'loanId': 99607155, u'executionStatus': [u'NOT_AN_IN_FUNDING_LOAN'], u'investedAmount': 0.0, u'requestedAmount': 25.0}, {u'loanId': 99517481, u'executionStatus': [u'NOT_AN_IN_FUNDING_LOAN'], u'investedAmount': 0.0, u'requestedAmount': 25.0}]
+	if outText:
+		return outText
+	else:
+		return str(result)
+
 def auto_invest_for_user(user):
 	account_info = UsersLCAccountInfo.get_by_user_id(user.id)
 	if not (account_info and account_info.auto_invest):
@@ -62,11 +84,12 @@ def auto_invest_for_user(user):
 	invest_params = UsersLCInvestParameters.get_by_user_id(user.id)
 	if invest_params:
 		result = get_orders(account_info, api_key, account_number, invest_params)
+		body = format_orderConfirmations(result)
 		send_email(
 			'no-reply@machinelending.com',
 			user.email,
 			'Machine Lending - Auto Invest Report',
-			str(result)
+			body
 		)
 
 def main():
