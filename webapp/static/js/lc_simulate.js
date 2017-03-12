@@ -1,6 +1,7 @@
 
 function LendingClubSimulator() {
 	this.lcIntRateSlider = '#lcIntRateSlider';
+	this.lcLoanAmountSlider = '#lcLoanAmountSlider';
 	this.lcDefaultRateSlider = '#lcDefaultRateSlider';
 	this.lcEarlyPayoffRateSlider = '#lcEarlyPayoffRateSlider';
 	this.lcNumLoansDisplay = '#lcNumLoansDisplay';
@@ -10,6 +11,8 @@ function LendingClubSimulator() {
 	this.lcAvgSimulatedReturnDisplay = '#lcAvgSimulatedReturnDisplay';
 	this.lcCurrentTable = '#lcSimulateTable';
 	this.lcAsOfDate = '#lcAsOfDate';
+	this.lcSaveInvestParamsButton = '#lcSaveInvestParamsButton';
+	this.lcConfirmSaveDialog = '#lcConfirmSaveDialog';
 
 	this.currentLoansJson = {};
 	this.filteredLoansList = [];
@@ -19,6 +22,27 @@ LendingClubSimulator.prototype = new LendingClubSimulator();
 LendingClubSimulator.prototype.constructor = LendingClubSimulator;
 let lcSimulator = new LendingClubSimulator();
 
+LendingClubSimulator.prototype.saveInvestParams = function(){
+	let params = lcSimulator.getSimulateParams();
+	let backend_params = {
+		'min_default_rate': params['defaultRates'][0]/100.0,
+		'max_default_rate': params['defaultRates'][1]/100.0,
+		'min_int_rate': params['intRates'][0],
+		'max_int_rate': params['intRates'][1],
+		'min_loan_amount': params['loanAmounts'][0],
+		'max_loan_amount': params['loanAmounts'][1],
+	};
+	var _this = this;
+	$.post('/lc/save_invest_params', backend_params,
+		function(json){
+			lcSimulator.openConfirmSaveDialog();
+		}
+	).fail(function(jqxhr, textStatus, error ) {
+		var err = textStatus + ", " + error;
+	  console.log( "Request Failed: " + err );
+	});
+};
+
 LendingClubSimulator.prototype.filterLoans = function(params){
 	let json = this.currentLoansJson;
 	let loans = json['loans'];
@@ -26,9 +50,14 @@ LendingClubSimulator.prototype.filterLoans = function(params){
 	for (let i = 0; i < loans.length; i++) {
 		let defaultRate = (100*loans[i]['defaultProb']).toFixed(2);
 		let intRate = loans[i]['intRate'].toFixed(2);
+		let loanAmount = loans[i]['loanAmount'].toFixed(2);
+
 		let isInDefaultRateRange =  defaultRate >= params['defaultRates'][0] && defaultRate <= params['defaultRates'][1];
 		let isInIntRateRange = intRate >= params['intRates'][0] && intRate <= params['intRates'][1];
-		let include = isInDefaultRateRange && isInIntRateRange;
+		let isInLoanAmountRange = loanAmount >= params['loanAmounts'][0] && loanAmount <= params['loanAmounts'][1];
+
+		let include = isInDefaultRateRange &&
+			isInIntRateRange && isInLoanAmountRange;
 		if (include){
 			this.filteredLoansList.push(loans[i]);
 		}
@@ -56,11 +85,11 @@ LendingClubSimulator.prototype.remainingBalance = function(
 LendingClubSimulator.prototype.simulate = function(loan, params){
 	//console.log(params);
 	let N = Number(params['numberIterations']);
-	let payoffProb = Number(params['EarlyPayoffRate'])/100.0;
+	let payoffProb = Number(params['earlyPayoffRate'])/100.0;
 	let term = Number(loan['term']);
 	let defaultProb = Number(loan['defaultProb']);
 	let intRate = Number(loan['intRate']);
-	let loanAmount = 25;//Number(loan['loanAmount']);
+	let loanAmount = 25;
 	let totalPaid = this.totalPaid(intRate, loanAmount, term);
 	let monthlyPayment = totalPaid/term;
 
@@ -98,13 +127,20 @@ LendingClubSimulator.prototype.simulate = function(loan, params){
 };
 // NOTE: Calculate the chargoff distribution funciton from dataset.
 
-LendingClubSimulator.prototype.update = function(event, ui){
+LendingClubSimulator.prototype.getSimulateParams = function(){
 	let params = {
 		'defaultRates': getRangedSliderValues(lcSimulator.lcDefaultRateSlider),
 		'intRates': getRangedSliderValues(lcSimulator.lcIntRateSlider),
-		'EarlyPayoffRate': getSliderValue(lcSimulator.lcEarlyPayoffRateSlider),
+		'loanAmounts': getRangedSliderValues(lcSimulator.lcLoanAmountSlider),
+		'earlyPayoffRate': getSliderValue(lcSimulator.lcEarlyPayoffRateSlider),
 		'numberIterations': 500,
 	};
+	return params;
+};
+
+LendingClubSimulator.prototype.update = function(event, ui){
+
+	let params = lcSimulator.getSimulateParams();
 
 	lcSimulator.filterLoans(params);
 	let filtered = lcSimulator.filteredLoansList;
@@ -178,3 +214,37 @@ LendingClubSimulator.prototype.makeTable = function(){
 		"columns": columns,
 	});
 };
+
+LendingClubSimulator.prototype.addSaveInvestParamsButtonListener = function(){
+	$(this.lcSaveInvestParamsButton).bind("click", this.saveInvestParams);
+};
+
+LendingClubSimulator.prototype.openConfirmSaveDialog = function(){
+	lcSimulator.setupConfirmSaveDialog();
+	$(lcSimulator.lcConfirmSaveDialog).dialog("open");
+};
+
+LendingClubSimulator.prototype.setupConfirmSaveDialog = function(){
+	let buttons = [];
+	$(lcSimulator.lcConfirmSaveDialog).html("Auto-Invest parameters saved!");
+
+	buttons = [
+		{
+			text: "Close",
+			click: function() {
+				$(this).dialog("close");
+			}
+		}
+	];
+
+	$(lcSimulator.lcConfirmSaveDialog).dialog({
+		autoOpen: false,
+		modal: true,
+		dialogClass: "no-close",
+		buttons: buttons,
+	});
+};
+
+$(function() {
+	lcSimulator.addSaveInvestParamsButtonListener();
+});
