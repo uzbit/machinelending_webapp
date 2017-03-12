@@ -5,6 +5,7 @@ from webapp.models import User
 from webapp.models import UsersLCInvestParameters
 from webapp.models import UsersLCAccountInfo
 from modules.LendingClubApi import LendingClubApi
+from modules.utilities import send_email
 
 MAX_TERM = 36
 recent_loans = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
@@ -35,16 +36,21 @@ def get_order(loan, amount, portfolio_id):
 	}
 
 def get_orders(account_info, api_key, account_number, invest_params):
-	lcApi = LendingClubApi(api_key, accountId=account_number, test=True)
+	lcApi = LendingClubApi(
+		api_key, accountId=account_number, test=app.config['TEST']
+	)
 	portfolio_id = lcApi.getPortfolioId(account_info.portfolio_name)
 
-	filtered_loans = filter(lambda x: filter_loan(x, invest_params), recent_loans)
+	filtered_loans = filter(
+		lambda x: filter_loan(x, invest_params),
+		recent_loans
+	)
 
 	orders = list()
 	for loan in filtered_loans:
 		orders.append(get_order(loan, 25, portfolio_id))
-	print orders
-	#lcApi.placeOrders(orders)
+	#print orders
+	return lcApi.placeOrders(orders)
 
 def auto_invest_for_user(user):
 	account_info = UsersLCAccountInfo.get_by_user_id(user.id)
@@ -55,7 +61,13 @@ def auto_invest_for_user(user):
 
 	invest_params = UsersLCInvestParameters.get_by_user_id(user.id)
 	if invest_params:
-		get_orders(account_info, api_key, account_number, invest_params)
+		result = get_orders(account_info, api_key, account_number, invest_params)
+		send_email(
+			'no-reply@machinelending.com',
+			user.email,
+			'Machine Lending - Auto Invest Report',
+			str(result)
+		)
 
 def main():
 	users = User.query.all()
