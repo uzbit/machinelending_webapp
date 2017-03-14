@@ -41,11 +41,15 @@ class User(db.Model, UserMixin):
 
 	def is_subscription_valid(self):
 		foundActiveSubscription = False
-		if self.stripe_id:
-			customer = stripe.Customer.retrieve(self.stripe_id)
-			for subs in customer["subscriptions"]["data"]:
-				if subs["status"] == "active":
-					foundActiveSubscription = True
+		try:
+			if self.stripe_id:
+				customer = stripe.Customer.retrieve(self.stripe_id)
+				for subs in customer["subscriptions"]["data"]:
+					if subs["status"] == "active":
+						foundActiveSubscription = True
+		except Exception as e:
+			print_log(e)
+
 		return foundActiveSubscription
 
 	def commit(self):
@@ -114,7 +118,7 @@ class UsersLCAccountInfo(db.Model):
 				account_number = flask.session['lc_account_number']
 		except RuntimeError:
 			pass
-			
+
 		if not api_key and account_info.enc_api_key:
 			api_key = decrypt_data(
 				account_info.enc_api_key,
