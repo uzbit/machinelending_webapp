@@ -3,6 +3,7 @@ import os
 import cPickle as pickle
 import flask
 import traceback
+import hashlib
 from functools import wraps
 
 from config import TEST, STRIPE_API_KEY
@@ -37,12 +38,31 @@ def valid_subscription_required(f):
 #----------------------------------------------------------------------------#
 
 class ListedLoansView(MethodView):
+	def __init__(self):
+		self.__data = dict()
+		self.__timestamp = 0
+		self.__loansPath = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
+
+	def __should_refresh(self):
+		if not self.__timestamp:
+			return True
+		if not self.__data:
+			return True
+
+		mtime = os.path.getmtime(self.__loansPath)
+		if mtime != self.__timestamp:
+			self.__timestamp = mtime
+			return True
+			
+		return False
+
+
 	def get(self):
 		try:
-			dataDir = os.path.join(app.config['BASE_DIR'], 'lcApi/data/recentLoans.pickle')
-			data = pickle.load(open(dataDir, 'rb'))
-			#print_log(flask.session)
-			return flask.jsonify(data)
+			if self.__should_refresh():
+				self.__data = pickle.load(open(self.__loansPath, 'rb'))
+
+			return flask.jsonify(self.__data)
 		except Exception as e:
 			print_log(traceback.format_exc())
 			return flask.jsonify({'error': str(e)})
