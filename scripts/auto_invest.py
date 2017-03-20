@@ -95,6 +95,9 @@ def auto_invest_for_user(user):
 		)
 
 		body = format_orderConfirmations(result)
+		body += "<p></p>Parameters used:<br>\n"
+		body += "%s" % (str(invest_params))
+
 		send_email(
 			'no-reply@machinelending.com',
 			user.email,
