@@ -1,7 +1,7 @@
 #psycopg2==2.6.2
-psycopg2cffi-compat
-psycopg2cffi
-alembic>=0.6
+psycopg2cffi-compat==1.1
+psycopg2cffi=2.7.5
+alembic==0.9.1
 Fabric==1.8.2
 Flask==0.12
 Flask-Login==0.4.0
@@ -27,4 +27,4 @@ python-http-client==2.2.1
 sendgrid==3.6.3
 bcrypt==3.1.1
 requests==2.9.1
-stripe
+stripe==1.51.0

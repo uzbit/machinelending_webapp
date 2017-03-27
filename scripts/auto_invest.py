@@ -10,6 +10,7 @@ from modules.utilities import send_email
 MAX_TERM = 36
 recent_loans = 'lcApi/data/recentLoans.pickle'
 recent_loans = pickle.load(open(recent_loans, 'rb'))
+loans_date = recent_loans['asOfDate']
 recent_loans = recent_loans['loans']
 
 def filter_loan(loan, invest_params):
@@ -72,6 +73,7 @@ def format_orderConfirmations(result):
 				outText += "<td>%s</td>" % str(order[key])
 			outText += "</tr>"
 		outText += "</table>"
+		outText += "<p>%s</p>" % loans_date
 		#[{u'loanId': 99238644, u'executionStatus': [u'NOT_AN_IN_FUNDING_LOAN'], u'investedAmount': 0.0, u'requestedAmount': 25.0}, {u'loanId': 97567829, u'executionStatus': [u'NOT_AN_IN_FUNDING_LOAN'], u'investedAmount': 0.0, u'requestedAmount': 25.0}, {u'loanId': 99607155, u'executionStatus': [u'NOT_AN_IN_FUNDING_LOAN'], u'investedAmount': 0.0, u'requestedAmount': 25.0}, {u'loanId': 99517481, u'executionStatus': [u'NOT_AN_IN_FUNDING_LOAN'], u'investedAmount': 0.0, u'requestedAmount': 25.0}]
 	if outText:
 		return outText
