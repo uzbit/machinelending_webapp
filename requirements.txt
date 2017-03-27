@@ -1,6 +1,6 @@
 #psycopg2==2.6.2
 psycopg2cffi-compat==1.1
-psycopg2cffi=2.7.5
+psycopg2cffi==2.7.5
 alembic==0.9.1
 Fabric==1.8.2
 Flask==0.12
