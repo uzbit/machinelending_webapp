@@ -21,12 +21,10 @@ ecdsa==0.10
 gunicorn==19.3.0
 itsdangerous==0.23
 paramiko==1.12.2
-#pycrypto==2.6.1
 wsgiref==0.1.2
 numpy==1.11.1
 python-http-client==2.2.1
 sendgrid==3.6.3
-simple-crypt==4.1.7
 bcrypt==3.1.1
 requests==2.9.1
 stripe
