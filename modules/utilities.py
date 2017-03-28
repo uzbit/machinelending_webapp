@@ -2,7 +2,7 @@
 import sys
 import sendgrid
 from sendgrid.helpers.mail import *
-from simplecrypt import encrypt, decrypt
+from simplecrypto import encrypt, decrypt
 from config import SENDGRID_API_KEY
 
 def print_log(out, verbose=True):
