@@ -1,5 +1,6 @@
 pip==9.0.1
 #psycopg2==2.6.2
+cffi==1.5.2
 psycopg2cffi-compat==1.1
 psycopg2cffi==2.7.5
 alembic==0.9.1

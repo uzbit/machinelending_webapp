@@ -5,7 +5,7 @@ import os
 import logging
 import flask
 from flask_login import LoginManager, current_user, login_required, logout_user
-from flask_assets import Environment, Bundle
+#from flask_assets import Environment, Bundle
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
