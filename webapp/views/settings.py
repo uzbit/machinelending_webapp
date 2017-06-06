@@ -73,6 +73,8 @@ def lc():
 			)
 			flask.flash("Saved LC account info.", 'success')
 		except Exception as e:
+			import traceback
+			traceback.print_exc()
 			flask.flash(str(e), 'danger')
 
 	flash_errors(form)

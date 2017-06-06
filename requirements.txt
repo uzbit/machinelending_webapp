@@ -30,4 +30,4 @@ sendgrid==3.6.3
 bcrypt==3.1.1
 requests==2.9.1
 stripe==1.51.0
-simplecrypto==0.3.3
+simple-crypt==4.7.1
