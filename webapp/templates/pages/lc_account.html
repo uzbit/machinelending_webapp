@@ -15,9 +15,9 @@ This information is encrypted before it's stored.
 	{{ form.account_number(class_ = 'form-control', placeholder = form.account_number.label.text) }}
 	{{ form.portfolio_name(class_ = 'form-control', placeholder = form.portfolio_name.label.text) }}
 	{% if current_user.is_subscription_valid() %}
-	{{ form.auto_invest.label }}
-	{{ form.auto_invest(class_ = 'form-control', placeholder = form.auto_invest.label.text) }}
-
+    <table border='0' padding="10px"><tr>
+    <td>{{ form.auto_invest.label }}</td><td>{{ form.auto_invest(placeholder = form.auto_invest.label.text) }}</td>
+    </tr></table>
 	{% endif %}
 
 	<input type="submit" value="Save" class="btn btn-primary">
