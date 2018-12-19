@@ -22,7 +22,7 @@ coverage==3.7.1
 ecdsa==0.10
 gunicorn==19.3.0
 itsdangerous==0.23
-paramiko==1.12.2
+paramiko
 wsgiref==0.1.2
 numpy==1.11.1
 python-http-client==2.2.1
